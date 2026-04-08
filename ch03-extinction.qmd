@@ -1,0 +1,17 @@
+# Function-Based Extinction Procedures
+
+![](images/extinction.png){fig-align="center"}
+
+Extinction is one of the most fundamental procedures in behaviour analysis and one of the most frequently misunderstood. The form that extinction takes depends entirely on the function of the behaviour being targeted, and applying the wrong form of extinction is not merely ineffective but potentially harmful. This chapter addresses the three functional variations of extinction, the response patterns commonly associated with its implementation, the variables that influence resistance to extinction, and the practical guidelines that govern its use. 
+
+This chapter contains **63 frames** across 9 sections. Work through them in order.
+
+::: callout-note
+**Tip:** Press Enter after typing your answer — you don't need to reach for the mouse.
+:::
+
+```{=html}
+<script src="js/ch03-extinction.js"></script>
+```
+::: {#pi-container}
+:::

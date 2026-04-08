@@ -1,0 +1,14 @@
+# Selecting Intervention Goals and Strategies
+
+![](images/selecting_goals.png){fig-align="center"}
+
+Effective behaviour analytic practice begins long before any intervention is implemented. Before selecting a procedure, practitioners must identify appropriate goals, define target behaviours with precision, and consider a range of clinical, ethical, and contextual factors that will shape whether an intervention succeeds or fails. This chapter addresses the full process of intervention planning from writing operational definitions of target behaviours through to the principles of least restrictive practice, social validity, consumer choice, and the role of clinical expertise. These are not peripheral considerations, they are the foundation on which all subsequent intervention decisions rest.
+
+This chapter contains **57 frames** across 9 sections.
+
+::: {.callout-note}
+**Tip:** Press Enter after typing your answer.
+:::
+
+<script src="js/ch05-selecting-interventions.js"></script>
+<div id="pi-container"></div>

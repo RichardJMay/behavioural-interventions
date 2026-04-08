@@ -1,0 +1,18 @@
+# Engagement
+
+![](images/engagement.png){fig-align="center"}
+
+Whether an intervention is evidence-based and implemented with high fidelity matters little if the people it is designed to help do not engage with it. Engagement — the degree to which participants interact with an intervention as intended — is a necessary condition for behaviour change, and its absence is one of the most common reasons that interventions which work under controlled conditions fail to produce meaningful outcomes in real-world settings. Poor engagement can take several forms: low initial uptake, early dropout, or failure to sustain participation long enough for behaviour change to be established and maintained.
+
+From a behaviour analytic perspective, engagement is itself a behaviour. It has antecedents, consequences, and motivating operations that can be identified, measured, and adapted. The same functional thinking applied to any target behaviour applies here. If engagement is low, the question is not simply how to increase it, but to try to understand why it is low in the first place. Understanding the variables that set the occasion for engagement, that compete with it, and that determine whether it is maintains is the prerequisite for designing interventions that people will actually use.
+
+This analysis is consistent with a growing evidence base from Implementation Science and health psychology, which has independently converged on many of the same conclusions. The person-based approach, social validity frameworks, and research on habit formation and environmental design all point to the same core principle: interventions must be built around the needs, values, and everyday contexts of the people who will use them, not imposed upon them. This chapter examines engagement through a behaviour analytic lens while drawing on this broader literature to understand the motivational and contextual variables that are important in implementation.
+
+This chapter contains **32 frames** across 7 sections.
+
+::: {.callout-note}
+**Tip:** Press Enter after typing your answer.
+:::
+
+<script src="js/ch07-engagement.js"></script>
+<div id="pi-container"></div>

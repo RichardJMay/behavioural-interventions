@@ -1,0 +1,16 @@
+# Treatment Fidelity
+
+![](images/fidelity.png){fig-align="center"}
+
+The effectiveness of a behavioural intervention depends not only on its empirical support, but on whether it is implemented as designed. Treatment fidelity refers to the degree to which the critical components of an intervention are delivered accurately and consistently. In the absence of adequate fidelity, observed outcomes cannot be confidently attributed to the intervention itself. This matters in both directions: poor implementation can make an effective intervention appear to fail, or an ineffective one appear to work.
+
+From a behaviour analytic perspective, fidelity is concerned with the reliability of the independent variable. Just as interobserver agreement establishes that the dependent variable has been measured consistently, treatment fidelity establishes that the intervention has been delivered consistently. This chapter examines treatment fidelity from both behaviour analytic and broader implementation science perspectives. It addresses how to conceptualise fidelity as a multidimensional construct encompassing adherence, competence, and treatment differentiation; how to measure it using direct and indirect methods; and how to establish and maintain it.
+
+This chapter contains **36 frames** across 7 sections.
+
+::: {.callout-note}
+**Tip:** Press Enter after typing your answer.
+:::
+
+<script src="js/ch06-treatment-fidelity.js"></script>
+<div id="pi-container"></div>

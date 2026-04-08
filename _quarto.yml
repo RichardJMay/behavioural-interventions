@@ -1,0 +1,45 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Behavioural Interventions"
+  subtitle: "A Programmed Instruction Course"
+  author: "Dr Richard May BCBA-D | University of South Wales"
+  date: today
+  chapters:
+    - index.qmd
+    - part: "Assessment and Planning"
+      chapters:
+        - ch05-selecting-interventions.qmd
+        - ch04-evidence-based-practice.qmd
+    - part: "Behaviour Change Procedures"
+      chapters:
+        - ch01-differential-reinforcement.qmd
+        - ch02-antecedent-interventions.qmd
+        - ch03-extinction.qmd
+    - part: "Implementation"
+      chapters:
+        - ch06-treatment-fidelity.qmd
+        - ch07-engagement.qmd
+    - slot-machine.qmd
+    - references.qmd
+    - about.qmd
+
+resources:
+  - token-exchange.html
+
+bibliography: references.bib
+nocite: '@*'
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    smooth-scroll: true
+    include-in-header:
+      text: |
+        <script src="js/pi-engine.js"></script>

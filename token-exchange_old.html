@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Exchange — Behavioural Interventions</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0f;
+  --dark:#0f0f1a;
+  --panel:#151525;
+  --mid:#1e1e38;
+  --rim:#2a2a4a;
+  --cyan:#00dddd;
+  --cyan2:#00aaaa;
+  --magenta:#ff00ff;
+  --yellow:#ffff00;
+  --green:#00ff66;
+  --green2:#00cc44;
+  --red:#ff3333;
+  --orange:#ff8800;
+  --white:#f0f0f0;
+  --pixel:2px;
+}
+
+body{
+  font-family:'Press Start 2P',monospace;
+  background:var(--black);
+  color:var(--white);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:2rem 1rem 4rem;
+  image-rendering:pixelated;
+}
+
+/* ── Scanline overlay on whole page ── */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+  pointer-events:none;
+  z-index:1000;
+}
+
+/* ── Page header ── */
+.page-header{
+  text-align:center;
+  margin-bottom:2rem;
+}
+
+.page-header h1{
+  font-size:1.9rem;
+  color:var(--cyan);
+  text-shadow:0 0 6px var(--cyan),0 0 12px var(--cyan2);
+  letter-spacing:.08em;
+  line-height:1.6;
+  margin-bottom:.5rem;
+  animation:flicker 4s infinite;
+}
+
+@keyframes flicker{
+  0%,95%,100%{opacity:1}
+  96%{opacity:.8}
+  97%{opacity:1}
+  98%{opacity:.7}
+  99%{opacity:1}
+}
+
+.page-header .sub{
+  font-size:.45rem;
+  color:var(--magenta);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+
+/* ── Cabinet outer shell ── */
+.cabinet{
+  width:100%;
+  max-width:480px;
+  position:relative;
+}
+
+/* Pixel border utility — 4px hard-edge box */
+.pixel-box{
+  box-shadow:
+    0 0 0 2px var(--rim),
+    0 0 0 4px var(--dark),
+    0 0 0 6px var(--rim),
+    4px 4px 0 6px rgba(0,0,0,0.6);
+}
+
+/* ── Marquee / top panel ── */
+.marquee{
+  background:var(--panel);
+  border:4px solid var(--rim);
+  border-bottom:none;
+  padding:.75rem 1rem .6rem;
+  position:relative;
+  clip-path:polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);
+}
+
+.marquee-lights{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:.6rem;
+  padding:0 .25rem;
+}
+
+.bulb{
+  width:10px;
+  height:10px;
+  border:2px solid var(--rim);
+  background:var(--rim);
+  image-rendering:pixelated;
+  flex-shrink:0;
+}
+
+.bulb.on-y{background:var(--yellow);border-color:var(--orange);box-shadow:0 0 6px var(--yellow)}
+.bulb.on-c{background:var(--cyan);border-color:var(--cyan2);box-shadow:0 0 6px var(--cyan)}
+.bulb.on-m{background:var(--magenta);border-color:#cc00cc;box-shadow:0 0 6px var(--magenta)}
+
+.marquee-title{
+  text-align:center;
+  font-size:.85rem;
+  color:var(--yellow);
+  text-shadow:0 0 8px var(--yellow),2px 2px 0 rgba(0,0,0,0.8);
+  letter-spacing:.1em;
+  margin-bottom:.3rem;
+}
+
+.marquee-sub{
+  text-align:center;
+  font-size:.38rem;
+  color:var(--cyan2);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+
+/* ── Main machine face ── */
+.machine-face{
+  background:var(--panel);
+  border:4px solid var(--rim);
+  padding:1.25rem 1.25rem 1rem;
+}
+
+/* ── Credit display ── */
+.credit-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:var(--black);
+  border:3px solid var(--rim);
+  padding:.5rem .75rem;
+  margin-bottom:1rem;
+}
+
+.credit-label{
+  font-size:.38rem;
+  color:var(--cyan2);
+  letter-spacing:.15em;
+}
+
+.credit-value{
+  font-family:'VT323',monospace;
+  font-size:2rem;
+  color:var(--green);
+  text-shadow:0 0 5px var(--green);
+  letter-spacing:.1em;
+  line-height:1;
+}
+
+.credit-suffix{
+  font-size:.35rem;
+  color:var(--rim);
+  letter-spacing:.1em;
+  text-align:right;
+}
+
+/* ── Reel housing ── */
+.reel-housing{
+  background:var(--black);
+  border:4px solid var(--rim);
+  padding:.75rem .5rem;
+  margin-bottom:.75rem;
+  position:relative;
+}
+
+/* CRT effect inside reel housing */
+.reel-housing::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      rgba(0,255,255,0.02) 3px,
+      rgba(0,255,255,0.02) 4px
+    );
+  pointer-events:none;
+}
+
+.reels-wrap{
+  display:flex;
+  gap:.5rem;
+  justify-content:center;
+  margin-bottom:.6rem;
+}
+
+.reel-outer{
+  flex:1;
+  max-width:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.25rem;
+}
+
+.reel-window{
+  width:100%;
+  aspect-ratio:1;
+  background:#050510;
+  border:3px solid #333;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Pixel corner decorations */
+.reel-window::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border:2px solid transparent;
+  box-shadow:
+    inset 3px 3px 0 rgba(0,255,255,0.15),
+    inset -3px -3px 0 rgba(0,255,255,0.05);
+  pointer-events:none;
+  z-index:2;
+}
+
+.reel-symbol{
+  font-family:'Press Start 2P',monospace;
+  font-size:1.1rem;
+  color:var(--cyan);
+  text-shadow:0 0 8px var(--cyan);
+  text-align:center;
+  line-height:1.2;
+  z-index:1;
+  padding:.25rem;
+}
+
+.reel-symbol.spinning{
+  animation:pixel-spin .1s steps(2) infinite;
+  color:var(--magenta);
+  text-shadow:0 0 8px var(--magenta);
+}
+
+@keyframes pixel-spin{
+  0%  {content:'';opacity:.4;transform:translateY(-8px)}
+  50% {opacity:1; transform:translateY(0)}
+  100%{opacity:.4;transform:translateY(8px)}
+}
+
+.reel-window.win-flash{
+  animation:pixel-win .25s steps(1) 6;
+}
+
+@keyframes pixel-win{
+  0%  {background:#050510;border-color:#333}
+  50% {background:#002200;border-color:var(--green)}
+}
+
+/* Hold button under each reel */
+.hold-btn{
+  font-family:'Press Start 2P',monospace;
+  font-size:.3rem;
+  color:var(--rim);
+  background:var(--dark);
+  border:2px solid var(--rim);
+  padding:.3rem .4rem;
+  width:100%;
+  cursor:default;
+  letter-spacing:.05em;
+  text-align:center;
+}
+
+/* ── Result message ── */
+.result-msg{
+  font-family:'VT323',monospace;
+  font-size:1.6rem;
+  text-align:center;
+  min-height:2rem;
+  color:#555;
+  letter-spacing:.1em;
+  line-height:1;
+}
+
+.result-msg.win-msg{
+  color:var(--yellow);
+  text-shadow:0 0 10px var(--yellow);
+  animation:blink-win .4s steps(1) infinite;
+}
+
+@keyframes blink-win{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
+}
+
+.result-msg.lose-msg{color:#666}
+
+/* ── Control panel ── */
+.control-panel{
+  background:var(--mid);
+  border:3px solid var(--rim);
+  border-top:none;
+  padding:1rem 1.25rem 1.25rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.75rem;
+}
+
+/* ── Spin button — big arcade push button ── */
+.spin-btn-wrap{
+  position:relative;
+  width:140px;
+  height:56px;
+}
+
+.spin-btn{
+  position:absolute;
+  inset:0;
+  font-family:'Press Start 2P',monospace;
+  font-size:.55rem;
+  letter-spacing:.08em;
+  color:var(--black);
+  background:var(--yellow);
+  border:none;
+  cursor:pointer;
+  /* Pixel 3D effect */
+  box-shadow:
+    0 6px 0 #996600,
+    0 8px 0 rgba(0,0,0,0.5);
+  transition:transform .05s steps(1), box-shadow .05s steps(1);
+  clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px);
+}
+
+.spin-btn:hover:not(:disabled){
+  background:#ffff44;
+}
+
+.spin-btn:active:not(:disabled){
+  transform:translateY(4px);
+  box-shadow:0 2px 0 #996600,0 3px 0 rgba(0,0,0,0.5);
+}
+
+.spin-btn:disabled{
+  background:#333;
+  color:#555;
+  box-shadow:0 6px 0 #111,0 8px 0 rgba(0,0,0,0.5);
+  cursor:default;
+}
+
+/* ── Win code ── */
+.code-box{
+  display:none;
+  width:100%;
+  background:var(--black);
+  border:3px solid var(--green);
+  padding:.75rem;
+  text-align:center;
+  box-shadow:0 0 15px rgba(0,255,102,0.3);
+}
+
+.code-win-label{
+  font-size:.35rem;
+  color:var(--green2);
+  letter-spacing:.15em;
+  margin-bottom:.5rem;
+}
+
+.code-value{
+  font-family:'VT323',monospace;
+  font-size:2.2rem;
+  color:var(--green);
+  text-shadow:0 0 10px var(--green);
+  letter-spacing:.2em;
+  margin-bottom:.4rem;
+}
+
+.code-note{
+  font-size:.3rem;
+  color:#448844;
+  letter-spacing:.1em;
+}
+
+/* ── Bottom panel ── */
+.bottom-panel{
+  background:var(--panel);
+  border:4px solid var(--rim);
+  border-top:2px solid var(--rim);
+  padding:.6rem 1.25rem .5rem;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px));
+}
+
+.coin-tray{
+  background:var(--black);
+  border:3px solid #222;
+  border-top:3px solid #333;
+  height:18px;
+  box-shadow:inset 0 3px 0 rgba(0,0,0,0.8);
+}
+
+/* ── MCQ section ── */
+.mcq-section{
+  width:100%;
+  max-width:480px;
+  margin-top:1rem;
+  background:var(--panel);
+  border:4px solid var(--rim);
+  padding:1rem 1.25rem;
+  box-shadow:4px 4px 0 rgba(0,0,0,0.6);
+}
+
+.mcq-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:.75rem;
+  padding-bottom:.5rem;
+  border-bottom:2px solid var(--rim);
+}
+
+.mcq-top h2{
+  font-size:.45rem;
+  color:var(--yellow);
+  letter-spacing:.08em;
+}
+
+.pip-row{display:flex;gap:4px}
+
+.pip{
+  width:10px;height:10px;
+  background:var(--rim);
+  image-rendering:pixelated;
+}
+.pip.earned{background:var(--yellow);box-shadow:0 0 4px var(--yellow)}
+.pip.wrong{background:var(--red);box-shadow:0 0 4px var(--red)}
+
+.question-text{
+  font-family:'VT323',monospace;
+  font-size:1.3rem;
+  color:var(--white);
+  line-height:1.5;
+  margin-bottom:.75rem;
+  letter-spacing:.03em;
+}
+
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:.4rem;
+  margin-bottom:.6rem;
+}
+
+.option-btn{
+  font-family:'Press Start 2P',monospace;
+  font-size:.48rem;
+  text-align:left;
+  padding:.55rem .7rem;
+  background:var(--dark);
+  border:2px solid var(--rim);
+  color:var(--white);
+  cursor:pointer;
+  letter-spacing:.04em;
+  line-height:1.6;
+  transition:none;
+  box-shadow:2px 2px 0 rgba(0,0,0,0.6);
+}
+
+.option-btn:hover:not(:disabled){
+  background:var(--mid);
+  border-color:var(--cyan);
+  color:var(--cyan);
+  box-shadow:3px 3px 0 rgba(0,0,0,0.6);
+}
+
+.option-btn:disabled{cursor:default}
+.option-btn.correct{background:#002200;border-color:var(--green);color:var(--green);box-shadow:2px 2px 0 rgba(0,255,102,0.3)}
+.option-btn.incorrect{background:#220000;border-color:var(--red);color:var(--red)}
+
+.q-feedback{
+  font-family:'VT323',monospace;
+  font-size:1.1rem;
+  min-height:1.4rem;
+  text-align:center;
+  margin-bottom:.5rem;
+  letter-spacing:.04em;
+}
+.q-feedback.ok{color:var(--green);text-shadow:0 0 6px var(--green)}
+.q-feedback.err{color:var(--red)}
+
+.next-btn{
+  display:none;
+  width:100%;
+  font-family:'Press Start 2P',monospace;
+  font-size:.4rem;
+  padding:.6rem;
+  background:var(--dark);
+  border:2px solid var(--cyan);
+  color:var(--cyan);
+  cursor:pointer;
+  letter-spacing:.08em;
+  box-shadow:2px 2px 0 rgba(0,0,0,0.6);
+}
+.next-btn:hover{background:var(--mid);box-shadow:3px 3px 0 rgba(0,0,0,0.6)}
+
+.session-done{
+  display:none;
+  text-align:center;
+  padding:1rem 0;
+}
+.session-done p{
+  font-family:'VT323',monospace;
+  font-size:1.1rem;
+  color:#888;
+  line-height:1.7;
+  letter-spacing:.04em;
+}
+.session-done strong{color:var(--yellow)}
+
+/* ── VR badge ── */
+.vr-badge{
+  margin-top:1.25rem;
+  font-size:.3rem;
+  color:#f0f0f0;;
+  letter-spacing:.15em;
+  text-align:center;
+  text-transform:uppercase;
+}
+
+/* ── Footer ── */
+.page-footer{
+  margin-top:.75rem;
+  font-size:.45rem;
+  color:#5a5080;
+  text-align:center;
+  max-width:460px;
+  letter-spacing:.08em;
+  line-height:1.8;
+}
+
+/* ── Pixel decoration corners on cabinet ── */
+.cabinet::before,.cabinet::after{
+  content:'';
+  position:absolute;
+  width:12px;height:12px;
+  background:var(--cyan);
+  box-shadow:0 0 6px var(--cyan);
+}
+.cabinet::before{top:-2px;left:-2px}
+.cabinet::after{top:-2px;right:-2px}
+
+@media(max-width:400px){
+  .page-header h1{font-size:.75rem}
+  .reel-symbol{font-size:.85rem}
+  .marquee-title{font-size:.65rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>TOKEN EXCHANGE</h1>
+  <p class="sub">Behavioural Interventions &nbsp;·&nbsp; Dr R. May BCBA-D</p>
+</div>
+
+<div class="cabinet">
+
+  <!-- Marquee -->
+  <div class="marquee">
+    <div class="marquee-lights" id="marquee-lights"></div>
+    <div class="marquee-title">* INSERT KNOWLEDGE *</div>
+    <div class="marquee-sub">University of South Wales &nbsp;·&nbsp; ABA Edition</div>
+  </div>
+
+  <!-- Machine face -->
+  <div class="machine-face">
+
+    <!-- Credit display -->
+    <div class="credit-bar">
+      <div class="credit-label">SPINS</div>
+      <div class="credit-value" id="spins-count">00</div>
+      <div class="credit-suffix">AVAILABLE<br>CREDITS</div>
+    </div>
+
+    <!-- Reels -->
+    <div class="reel-housing">
+      <div class="reels-wrap">
+        <div class="reel-outer">
+          <div class="reel-window" id="reel-0"><div class="reel-symbol" id="sym-0">VR</div></div>
+          <div class="hold-btn">HOLD</div>
+        </div>
+        <div class="reel-outer">
+          <div class="reel-window" id="reel-1"><div class="reel-symbol" id="sym-1">DRO</div></div>
+          <div class="hold-btn">HOLD</div>
+        </div>
+        <div class="reel-outer">
+          <div class="reel-window" id="reel-2"><div class="reel-symbol" id="sym-2">FCT</div></div>
+          <div class="hold-btn">HOLD</div>
+        </div>
+      </div>
+      <div class="result-msg" id="result-msg">INSERT KNOWLEDGE TO PLAY</div>
+    </div>
+
+  </div>
+
+  <!-- Control panel -->
+  <div class="control-panel">
+    <div class="spin-btn-wrap">
+      <button class="spin-btn" id="spin-btn" disabled onclick="doSpin()">SPIN</button>
+    </div>
+    <div class="code-box" id="code-box">
+      <div class="code-win-label">&gt;&gt; JACKPOT — SHOW DR MAY &lt;&lt;</div>
+      <div class="code-value" id="code-value"></div>
+      <div class="code-note">SCREENSHOT THIS CODE — ONE USE ONLY</div>
+    </div>
+  </div>
+
+  <!-- Bottom panel / coin tray -->
+  <div class="bottom-panel">
+    <div class="coin-tray"></div>
+  </div>
+
+</div>
+
+<!-- MCQ section below machine -->
+<div class="mcq-section" id="mcq-section">
+  <div class="mcq-top">
+    <h2 id="mcq-title">EARN A SPIN</h2>
+    <div class="pip-row" id="pip-row"></div>
+  </div>
+  <div class="question-text" id="question-text"></div>
+  <div class="options" id="options"></div>
+  <div class="q-feedback" id="q-feedback"></div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">NEXT &gt;</button>
+  <div class="session-done" id="session-done">
+    <p><strong id="earned-summary"></strong><br><br>COMPLETE ANOTHER CHAPTER<br>TO EARN MORE SPINS</p>
+  </div>
+</div>
+
+<div class="vr-badge">RUNNING ON VR SCHEDULE &nbsp;·&nbsp; 15 PRIZE CODES LOADED</div>
+<p class="page-footer">THIS MACHINE STORES REDEEMED CODES IN YOUR BROWSER ONLY.<br>NO DATA IS COLLECTED OR TRANSMITTED TO ANY SERVER.</p>
+
+<script>
+const SYMBOLS=['VR','FR','DRO','DRA','NCR','EXT','FCT','MO'];
+const WIN_PROB=1/50;
+const ALL_CODES=['WOLF-1847','BEAR-2391','HAWK-4782','LYNX-5613','ORCA-7294','IBIS-8037','WREN-9152','MINK-3476','KITE-6829','VOLE-1053','NEWT-4817','TEAL-7293','PUMA-2648','SWIFT-3901','RAVEN-5274','STOAT-6183','FINCH-8427','SHREW-9036','BISON-1792','CRANE-4058','GECKO-2317','HERON-5840','MARTEN-7412','NUTHATCH-286','OSPREY-5931','PLOVER-8274','QUAIL-1639','SISKIN-7823','TAWNY-2916','VIPER-6083','WAXWING-549','AVOCET-7134','BITTERN-2869','DOTTEREL-7528','EIDER-3096','FULMAR-8241','GARGANEY-573','HOOPOE-9612','JACAMAR-8053','KINGFISHER-219','MERLIN-4037','NIGHTJAR-6952','OUZEL-3481','PEREGRINE-870','REDSTART-5629','SANDERLING-41','TURNSTONE-768','WHIMBREL-3924','YELLOWHAMMER-62','DIPPER-5503'];
+const ALL_QUESTIONS=[
+{q:"Differential reinforcement involves reinforcing one response class and __________ reinforcement for another.",options:["WITHHOLDING","INCREASING","DOUBLING","SCHEDULING"],correct:0,feedback:"Withholding reinforcement for the problem behaviour is the second essential component of DR."},
+{q:"DRA can be conceptualised as a __________ schedule in which two response classes compete.",options:["FIXED RATIO","CONCURRENT","MULTIPLE","TANDEM"],correct:1,feedback:"DRA is a concurrent schedule — both response classes operate simultaneously under different contingencies."},
+{q:"When the alternative behaviour in DRA cannot co-occur with the problem behaviour, the procedure is:",options:["DNRA","DRO","DRI","DRL"],correct:2,feedback:"DRI — Differential Reinforcement of Incompatible behaviour — is a subtype of DRA."},
+{q:"The reemergence of problem behaviour when reinforcement for the alternative is reduced is called:",options:["SPONT. RECOVERY","RESURGENCE","EXTINCTION BURST","RESPONSE VARIATION"],correct:1,feedback:"Resurgence occurs when reinforcement for the alternative behaviour is weakened or discontinued."},
+{q:"DRL is selected when the __________ of a behaviour is problematic, not its form.",options:["TOPOGRAPHY","FUNCTION","RATE","MAGNITUDE"],correct:2,feedback:"DRL targets rate reduction — the behaviour itself is appropriate, just too frequent."},
+{q:"With interval DRO, if problem behaviour occurs during the interval, the interval is:",options:["ENDED + REINFORCED","RESET","HALVED","IGNORED"],correct:1,feedback:"Any occurrence resets the interval — the learner must complete the full interval without problem behaviour."},
+{q:"Momentary DRO checks for the problem behaviour:",options:["THROUGHOUT","AT THE START","AT THE END POINT","RANDOMLY"],correct:2,feedback:"Momentary DRO only checks at the exact end-point of each interval, not throughout."},
+{q:"NCR functions as an abolishing operation because it:",options:["PUNISHES BEHAVIOUR","FREELY DELIVERS THE REINFORCER","BLOCKS SENSORY FB","INCREASES EFFORT"],correct:1,feedback:"Freely delivering the maintaining reinforcer reduces its current value and motivation to engage in problem behaviour."},
+{q:"The high-p instructional sequence builds __________ momentum before the low-p instruction.",options:["COGNITIVE","PHYSIOLOGICAL","BEHAVIOURAL","SOCIAL"],correct:2,feedback:"Reinforced compliance with high-p instructions creates behavioural momentum that carries over to the low-p instruction."},
+{q:"FCT establishes a communicative response that is __________ equivalent to the problem behaviour.",options:["STRUCTURAL","FUNCTIONAL","TOPOGRAPHICAL","SOCIAL"],correct:1,feedback:"The communicative response produces the same reinforcer as the problem behaviour — functional equivalence."},
+{q:"Escape extinction involves:",options:["WITHHOLDING ATTENTION","CONTINUING DEMANDS","DELIVERING NCR","BLOCKING SENSORY FB"],correct:1,feedback:"Escape extinction means the aversive stimulus continues despite problem behaviour."},
+{q:"The temporary increase in responding at the onset of extinction is called an extinction:",options:["BURST","SURGE","SPIKE","WAVE"],correct:0,feedback:"An extinction burst is a temporary increase in frequency, intensity, or duration at the onset of extinction."},
+{q:"Behaviour on a VR schedule is __________ resistant to extinction than behaviour on CRF.",options:["LESS","EQUALLY","MORE","UNPREDICTABLY"],correct:2,feedback:"Variable schedules produce greater resistance to extinction — the partial-reinforcement extinction effect."},
+{q:"The IISCA differs from traditional FA by testing a __________ of variables from interview.",options:["SINGLE","RANDOM","SYNTHESISED","BLOCKED"],correct:2,feedback:"The IISCA tests a synthesised contingency reflecting real-world complexity rather than isolated variables."},
+{q:"Skills-based treatment (SBT) teaches toleration, manding, and:",options:["DISCRIM. TRAINING","CONTEXTUAL CONTROL","STIMULUS FADING","RESP. BLOCKING"],correct:1,feedback:"Contextual control teaches the learner to discriminate when manding will and will not produce reinforcement."},
+{q:"Sensory extinction is used for behaviour maintained by:",options:["SOCIAL POSITIVE","ESCAPE","AUTOMATIC REINF.","TANGIBLES"],correct:2,feedback:"Sensory extinction masks or removes the automatic sensory reinforcement produced by the behaviour."},
+{q:"The initial DRO interval should be set at or slightly __________ the mean baseline IRT.",options:["ABOVE","BELOW","2x THE IRT","INDEPENDENT OF"],correct:1,feedback:"Starting below the mean IRT ensures the learner contacts reinforcement frequently at the outset."},
+{q:"Which DRL variant reinforces each response separated from the previous by a minimum IRT?",options:["FULL-SESSION","INTERVAL","SPACED-RESPONDING","VARIABLE"],correct:2,feedback:"Spaced-responding DRL reinforces each qualifying response individually based on the IRT criterion."},
+{q:"Default antecedent interventions differ from function-based ones because they:",options:["REQUIRE AN FA","MANIPULATE CONTINGENCY","DON'T NEED FUNCTION","USE EXTINCTION"],correct:2,feedback:"Default interventions reduce problem behaviour regardless of function, without requiring functional assessment."},
+{q:"Extinction should NOT be used alone when the behaviour is:",options:["LOW FREQUENCY","HARMFUL/DANGEROUS","EASILY OBSERVED","AUTO REINFORCED"],correct:1,feedback:"Dangerous behaviour may worsen during an extinction burst, making extinction alone inappropriate."},
+{q:"The matching law predicts responding is allocated in proportion to relative:",options:["RESPONSE EFFORT","REINF. RATES","SESSION LENGTH","INSTR. FREQUENCY"],correct:1,feedback:"Response allocation matches the relative rate of reinforcement across concurrent schedules."},
+{q:"In DNRA, the reinforcer for the alternative behaviour is:",options:["ATTENTION","TANGIBLES","ESCAPE","AUTO STIMULATION"],correct:2,feedback:"DNRA uses negative reinforcement — escape from demands — as the reinforcer for the alternative behaviour."},
+{q:"The three phases of the IISCA are interview, observation, and:",options:["TREATMENT","ANALYSIS","BASELINE","GENERALISATION"],correct:1,feedback:"Interview → observation → analysis (alternating synthesised test and control conditions)."},
+{q:"Treatment integrity failures during extinction are damaging because they create:",options:["AN EXT. BURST","INTERMITTENT REINF.","SPONT. RECOVERY","RESPONSE VARIATION"],correct:1,feedback:"Inconsistent implementation creates partial reinforcement, increasing resistance to extinction."},
+{q:"NCR with negative reinforcement is used when behaviour is maintained by:",options:["ATTENTION","TANGIBLES","ESCAPE","AUTOMATIC REINF."],correct:2,feedback:"NCR matches function — escape-maintained behaviour receives noncontingent escape on a time-based schedule."}
+];
+
+let spinsAvailable=0,isSpinning=false,sessionQuestions=[],currentQIndex=0,sessionSpinsEarned=0,sessionComplete=false,pipStates=[];
+let lightInterval=null;
+let lightStates=[];
+let lightStep=0;
+
+// ── Marquee lights ──
+function initLights(){
+  const row=document.getElementById('marquee-lights');
+  row.innerHTML='';
+  const colours=['on-y','on-c','on-m'];
+  const count=24;
+  lightStates=[];
+  for(let i=0;i<count;i++){
+    const b=document.createElement('div');
+    b.className='bulb';
+    row.appendChild(b);
+    lightStates.push(colours[i%3]);
+  }
+  lightInterval=setInterval(()=>{
+    lightStep=(lightStep+1)%3;
+    const bulbs=row.querySelectorAll('.bulb');
+    bulbs.forEach((b,i)=>{
+      b.className='bulb';
+      if((i+lightStep)%3===0)b.className='bulb '+lightStates[i];
+    });
+  },180);
+}
+
+// ── Audio (Web Audio API) ──
+let audioCtx=null;
+function getAudio(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playClick(){
+  try{
+    const ctx=getAudio();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='square';
+    osc.frequency.setValueAtTime(220,ctx.currentTime);
+    gain.gain.setValueAtTime(0.08,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.04);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.04);
+  }catch(e){}
+}
+
+function playReelStop(index){
+  try{
+    const ctx=getAudio();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='square';
+    const freqs=[330,440,550];
+    osc.frequency.setValueAtTime(freqs[index],ctx.currentTime);
+    gain.gain.setValueAtTime(0.12,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.12);
+  }catch(e){}
+}
+
+function playWin(){
+  try{
+    const ctx=getAudio();
+    const notes=[523,659,784,1047];
+    notes.forEach((freq,i)=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='square';
+      osc.frequency.setValueAtTime(freq,ctx.currentTime+i*0.12);
+      gain.gain.setValueAtTime(0.1,ctx.currentTime+i*0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.12+0.2);
+      osc.start(ctx.currentTime+i*0.12);
+      osc.stop(ctx.currentTime+i*0.12+0.2);
+    });
+  }catch(e){}
+}
+
+function playCorrect(){
+  try{
+    const ctx=getAudio();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='square';
+    osc.frequency.setValueAtTime(660,ctx.currentTime);
+    osc.frequency.setValueAtTime(880,ctx.currentTime+0.1);
+    gain.gain.setValueAtTime(0.08,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.25);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.25);
+  }catch(e){}
+}
+
+function playWrong(){
+  try{
+    const ctx=getAudio();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='square';
+    osc.frequency.setValueAtTime(200,ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(100,ctx.currentTime+0.2);
+    gain.gain.setValueAtTime(0.08,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.2);
+  }catch(e){}
+}
+
+// ── Click sound during spin ──
+let clickInterval=null;
+function startClickSound(){
+  clickInterval=setInterval(playClick,80);
+}
+function stopClickSound(){
+  if(clickInterval){clearInterval(clickInterval);clickInterval=null;}
+}
+
+// ── Storage ──
+function getUsedCodes(){try{return JSON.parse(localStorage.getItem('ba_used_codes')||'[]')}catch{return[]}}
+function markCodeUsed(c){const u=getUsedCodes();if(!u.includes(c))u.push(c);try{localStorage.setItem('ba_used_codes',JSON.stringify(u))}catch{}}
+function getAvailableCode(){const u=getUsedCodes();const a=ALL_CODES.filter(c=>!u.includes(c));if(!a.length)return null;return a[Math.floor(Math.random()*a.length)]}
+function getSessionState(){try{return JSON.parse(sessionStorage.getItem('ba_slot_session')||'null')}catch{return null}}
+function saveSessionState(s){try{sessionStorage.setItem('ba_slot_session',JSON.stringify(s))}catch{}}
+function isWin(){return Math.random()<WIN_PROB}
+function pickQuestions(){return[...ALL_QUESTIONS].sort(()=>Math.random()-.5).slice(0,5)}
+
+function renderPips(){
+  const row=document.getElementById('pip-row');
+  row.innerHTML='';
+  pipStates.forEach(state=>{
+    const p=document.createElement('div');
+    p.className='pip'+(state?' '+state:'');
+    row.appendChild(p);
+  });
+}
+
+function init(){
+  initLights();
+  const saved=getSessionState();
+  if(saved&&saved.complete){
+    spinsAvailable=saved.spinsRemaining||0;
+    sessionComplete=true;
+    pipStates=saved.pipStates||Array(5).fill('');
+    showSessionComplete(saved.spinsEarned||0);
+  }else if(saved&&!saved.complete){
+    spinsAvailable=saved.spinsRemaining||0;
+    sessionQuestions=saved.questions;
+    currentQIndex=saved.qIndex;
+    sessionSpinsEarned=saved.spinsEarned||0;
+    pipStates=saved.pipStates||Array(5).fill('');
+    renderQuestion();
+  }else{
+    sessionQuestions=pickQuestions();
+    currentQIndex=0;spinsAvailable=0;sessionSpinsEarned=0;
+    pipStates=Array(5).fill('');
+    saveSessionState({complete:false,questions:sessionQuestions,qIndex:0,spinsRemaining:0,spinsEarned:0,pipStates});
+    renderQuestion();
+  }
+  updateSpinsDisplay();
+  updateSpinBtn();
+  renderPips();
+}
+
+function renderQuestion(){
+  if(currentQIndex>=sessionQuestions.length){endSession();return}
+  const q=sessionQuestions[currentQIndex];
+  document.getElementById('mcq-title').textContent='Q'+(currentQIndex+1)+' OF '+sessionQuestions.length+' — EARN A SPIN';
+  document.getElementById('question-text').textContent=q.q;
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('q-feedback').className='q-feedback';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('session-done').style.display='none';
+  const el=document.getElementById('options');el.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.textContent=opt;
+    btn.onclick=()=>answerQuestion(i,q,btn);
+    el.appendChild(btn);
+  });
+  renderPips();
+}
+
+function answerQuestion(index,q,clickedBtn){
+  document.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+  const correct=index===q.correct;
+  clickedBtn.classList.add(correct?'correct':'incorrect');
+  document.querySelectorAll('.option-btn')[q.correct].classList.add('correct');
+  const fb=document.getElementById('q-feedback');
+  if(correct){
+    playCorrect();
+    spinsAvailable++;sessionSpinsEarned++;
+    fb.textContent='> CORRECT! SPIN EARNED <';
+    fb.className='q-feedback ok';
+    pipStates[currentQIndex]='earned';
+    updateSpinsDisplay();updateSpinBtn();
+  }else{
+    playWrong();
+    fb.textContent=q.feedback;
+    fb.className='q-feedback err';
+    pipStates[currentQIndex]='wrong';
+  }
+  renderPips();
+  saveSessionState({complete:false,questions:sessionQuestions,qIndex:currentQIndex+1,spinsRemaining:spinsAvailable,spinsEarned:sessionSpinsEarned,pipStates});
+  document.getElementById('next-btn').style.display='block';
+}
+
+function nextQuestion(){currentQIndex++;currentQIndex>=sessionQuestions.length?endSession():renderQuestion()}
+
+function endSession(){
+  saveSessionState({complete:true,spinsRemaining:spinsAvailable,spinsEarned:sessionSpinsEarned,pipStates});
+  sessionComplete=true;
+  showSessionComplete(sessionSpinsEarned);
+}
+
+function showSessionComplete(earned){
+  document.getElementById('options').innerHTML='';
+  document.getElementById('question-text').textContent='';
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('mcq-title').textContent='SESSION COMPLETE';
+  const sc=document.getElementById('session-done');
+  sc.style.display='block';
+  document.getElementById('earned-summary').textContent='YOU EARNED '+earned+' SPIN'+(earned!==1?'S':'')+' THIS SESSION';
+}
+
+function doSpin(){
+  if(spinsAvailable<=0||isSpinning)return;
+  spinsAvailable--;isSpinning=true;
+  updateSpinsDisplay();updateSpinBtn();
+  document.getElementById('result-msg').textContent='SPINNING...';
+  document.getElementById('result-msg').className='result-msg';
+  document.getElementById('code-box').style.display='none';
+
+  const syms=[0,1,2].map(i=>document.getElementById('sym-'+i));
+  syms.forEach(s=>s.classList.add('spinning'));
+  startClickSound();
+
+  const win=isWin();
+  let final;
+  if(win){
+    const s=SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)];
+    final=[s,s,s];
+  }else{
+    // Check for near-miss (2 matching)
+    do{final=[0,1,2].map(()=>SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)])}
+    while(final[0]===final[1]&&final[1]===final[2]);
+  }
+
+  setTimeout(()=>{stopReel(0,final[0]);playReelStop(0)},500);
+  setTimeout(()=>{stopReel(1,final[1]);playReelStop(1)},850);
+  setTimeout(()=>{stopReel(2,final[2]);stopClickSound();playReelStop(2)},1200);
+  setTimeout(()=>resolveOutcome(win,final),1500);
+
+  const saved=getSessionState();
+  if(saved){saved.spinsRemaining=spinsAvailable;saveSessionState(saved);}
+}
+
+function stopReel(i,sym){
+  const el=document.getElementById('sym-'+i);
+  el.classList.remove('spinning');
+  el.textContent=sym;
+}
+
+function resolveOutcome(win,final){
+  isSpinning=false;updateSpinBtn();
+  if(win){
+    playWin();
+    [0,1,2].forEach(i=>{
+      const r=document.getElementById('reel-'+i);
+      r.classList.add('win-flash');
+      setTimeout(()=>r.classList.remove('win-flash'),1500);
+    });
+    const msg=document.getElementById('result-msg');
+    msg.textContent='** JACKPOT! **';
+    msg.className='result-msg win-msg';
+    const code=getAvailableCode();
+    if(code){
+      markCodeUsed(code);
+      document.getElementById('code-value').textContent=code;
+      document.getElementById('code-box').style.display='block';
+    }else{
+      msg.textContent='WINNER — ALL CODES USED! SEE DR MAY';
+    }
+  }else{
+    // Near-miss check
+    const twoMatch=(final[0]===final[1]||final[1]===final[2]||final[0]===final[2]);
+    const msgs=twoMatch
+      ?['SO CLOSE! ONE MORE...','NEARLY THERE...','JUST MISSED!']
+      :['NOT THIS TIME','TRY AGAIN','THE VR WILL PAY OFF','NO WIN','KEEP SPINNING'];
+    const msg=document.getElementById('result-msg');
+    msg.textContent=msgs[Math.floor(Math.random()*msgs.length)];
+    msg.className='result-msg lose-msg';
+  }
+}
+
+function updateSpinsDisplay(){
+  const n=spinsAvailable;
+  document.getElementById('spins-count').textContent=n<10?'0'+n:String(n);
+}
+
+function updateSpinBtn(){
+  const btn=document.getElementById('spin-btn');
+  btn.disabled=spinsAvailable<=0||isSpinning;
+  if(isSpinning)btn.textContent='...';
+  else if(spinsAvailable>0)btn.textContent='SPIN ('+spinsAvailable+')';
+  else btn.textContent='SPIN';
+}
+
+init();
+</script>
+</body>
+</html>

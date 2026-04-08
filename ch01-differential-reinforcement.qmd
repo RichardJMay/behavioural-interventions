@@ -1,0 +1,16 @@
+# Differential Reinforcement Interventions
+
+![](images/differential_reinforcement.png){fig-align="center"}
+
+Differential reinforcement is among the most widely used and empirically supported approaches to behaviour change in applied behaviour analysis. By selectively reinforcing some behaviours while withholding reinforcement for others, practitioners can simultaneously strengthen appropriate behaviour and reduce problem behaviour without relying on punishment. This chapter covers the three main differential reinforcement procedures — DRA, DRO, and DRL — along with their variants, implementation guidelines, and the conditions under which each is most appropriate. Understanding these procedures at a conceptual level, not just procedurally, is essential for applying them flexibly across the range of situations encountered in clinical practice.
+This chapter contains **100 frames** across 8 sections. Work through them in order. The progress bar updates as you complete each frame correctly.
+
+::: callout-note
+**Tip:** Press Enter after typing your answer — you don't need to reach for the mouse.
+:::
+
+```{=html}
+<script src="js/ch01-differential-reinforcement.js"></script>
+```
+::: {#pi-container}
+:::

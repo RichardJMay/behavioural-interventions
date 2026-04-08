@@ -1,0 +1,14 @@
+# Evidence-Based Practice
+
+![](images/evidence.png){fig-align="center"}
+
+Behaviour analysts have an ethical obligation to select interventions supported by the best available evidence. This chapter examines what that means in practice. How to evaluate the quality of systematic reviews, how to interpret meta-analytic findings, and how to identify and account for the biases that can distort the published literature. The chapter also addresses some of the concerns around the replication crisis and its relevance to applied behaviour analysis, and introduces open science practices as a response to these challenges. 
+
+This chapter contains **57 frames** across 9 sections.
+
+::: {.callout-note}
+**Tip:** Press Enter after typing your answer.
+:::
+
+<script src="js/ch04-evidence-based-practice.js"></script>
+<div id="pi-container"></div>
