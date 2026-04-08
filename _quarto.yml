@@ -1,6 +1,8 @@
 project:
   type: book
   output-dir: docs
+  resources:
+  - token-exchange.html
 
 book:
   title: "Behavioural Interventions"
@@ -25,9 +27,6 @@ book:
     - slot-machine.qmd
     - references.qmd
     - about.qmd
-
-resources:
-  - token-exchange.html
 
 bibliography: references.bib
 nocite: '@*'

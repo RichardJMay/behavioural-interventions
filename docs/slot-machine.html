@@ -270,7 +270,7 @@ div.csl-indent {
 <section id="spin-to-win" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="spin-to-win">Spin to win</h2>
 <p>Behaviour analysts have long recognised that immediate, arbitrary reinforcers can supplement more distal natural contingencies during the acquisition phase of learning, particularly when natural reinforcers are delayed. The Token Exchange applies that principle here with backup reinforcers available to via the RR schedule. Completing a chapter earns you access to a game. Correctly answering questions in the game earns you spins. A win earns you a code. If you are taking my Behavioural Interventions class in-person, a winning code can be redeemed for a small prize. Screenshot your code and email it to me to claim your prize. Each winning code is unique and can only be redeemed once.</p>
-<p><a href="../token-exchange.html" class="btn btn-primary" target="_blank">🎰 Open the Token Exchange</a></p>
+<p><a href="token-exchange.html" class="btn btn-primary" target="_blank">🎰 Open the Token Exchange</a></p>
 </section>
 <section id="recording-progress" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="recording-progress">Recording Progress</h2>
@@ -316,7 +316,10 @@ function renderStatus() {
   el.innerHTML = html;
 }
 
-renderStatus();
+document.addEventListener('DOMContentLoaded', renderStatus);
+window.addEventListener('focus', renderStatus);
+window.addEventListener('pageshow', renderStatus);
+window.addEventListener('storage', renderStatus);
 </script>
 </section>
 <section id="deleting-your-progress" class="level2 unnumbered">

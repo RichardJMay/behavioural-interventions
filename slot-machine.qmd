@@ -13,7 +13,7 @@ The machine runs on a Random Ratio (RR) schedule. This means each spin has an in
 Behaviour analysts have long recognised that immediate, arbitrary reinforcers can supplement more distal natural contingencies during the acquisition phase of learning, particularly when natural reinforcers are delayed. The Token Exchange applies that principle here with backup reinforcers available to via the RR schedule. Completing a chapter earns you access to a game. Correctly answering questions in the game earns you spins. A win earns you a code.
 If you are taking my Behavioural Interventions class in-person, a winning code can be redeemed for a small prize. Screenshot your code and email it to me to claim your prize. Each winning code is unique and can only be redeemed once.
 
-[🎰 Open the Token Exchange](../token-exchange.html){target="_blank" .btn .btn-primary}
+[🎰 Open the Token Exchange](token-exchange.html){target="_blank" .btn .btn-primary}
 
 ## Recording Progress {.unnumbered}
 
@@ -63,7 +63,10 @@ function renderStatus() {
   el.innerHTML = html;
 }
 
-renderStatus();
+document.addEventListener('DOMContentLoaded', renderStatus);
+window.addEventListener('focus', renderStatus);
+window.addEventListener('pageshow', renderStatus);
+window.addEventListener('storage', renderStatus);
 </script>
 ```
 
