@@ -279,7 +279,7 @@ window.PI_FRAMES = {
 
 
   "g42": {
-    stem: "The Treatment Evaluation Inventory (TEI) is a questionnaire used to rate the ___________ of interventions, originally developed for parents rating treatments in outpatient clinic settings.",
+    stem: "The Treatment Evaluation Inventory (TEI; Kazdin, 1980) is a questionnaire used to rate the ___________ of interventions, originally developed for parents rating treatments in outpatient clinic settings.",
     acceptable: ["acceptability", "social validity"],
     feedback: "The TEI and its short form (TEI-SF) capture parent and caregiver perceptions of treatment acceptability — a critical perspective given that caregivers are often the primary implementers and their buy-in directly affects treatment fidelity."
   },
