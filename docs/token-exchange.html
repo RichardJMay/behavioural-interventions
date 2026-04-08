@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Exchange — Behavioural Interventions</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0f;--dark:#0f0f1a;--panel:#151525;--mid:#1e1e38;--rim:#5a5080;
+  --cyan:#00dddd;--cyan2:#00aaaa;--magenta:#dd00dd;--yellow:#ffdd00;
+  --green:#00dd55;--green2:#00cc44;--red:#ff3333;--orange:#ff8800;
+  --white:#f0f0f0;--muted:#c8c0e0;
+}
+body{font-family:'Press Start 2P',monospace;background:var(--black);color:var(--white);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 4rem;image-rendering:pixelated}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);pointer-events:none;z-index:1000}
+.page-header{text-align:center;margin-bottom:1.5rem}
+.page-header h1{font-size:1.6rem;color:var(--cyan);text-shadow:0 0 6px var(--cyan),0 0 12px var(--cyan2);letter-spacing:.08em;line-height:1.2;margin-bottom:.5rem;animation:flicker 4s infinite}
+@keyframes flicker{0%,95%,100%{opacity:1}96%{opacity:.8}97%{opacity:1}98%{opacity:.7}99%{opacity:1}}
+.page-header .sub{font-size:.4rem;color:var(--magenta);letter-spacing:.15em;text-transform:uppercase}
+.cabinet{width:100%;max-width:480px;position:relative}
+.cabinet::before,.cabinet::after{content:'';position:absolute;width:12px;height:12px;background:var(--cyan);box-shadow:0 0 6px var(--cyan);z-index:10}
+.cabinet::before{top:-2px;left:-2px}
+.cabinet::after{top:-2px;right:-2px}
+.marquee{background:var(--panel);border:4px solid var(--rim);border-bottom:none;padding:.75rem 1rem .6rem;clip-path:polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.marquee-lights{display:flex;justify-content:space-between;margin-bottom:.6rem;padding:0 .25rem}
+.bulb{width:10px;height:10px;border:2px solid var(--rim);background:var(--rim);flex-shrink:0}
+.bulb.on-y{background:var(--yellow);border-color:var(--orange);box-shadow:0 0 6px var(--yellow)}
+.bulb.on-c{background:var(--cyan);border-color:var(--cyan2);box-shadow:0 0 6px var(--cyan)}
+.bulb.on-m{background:var(--magenta);border-color:#aa00aa;box-shadow:0 0 6px var(--magenta)}
+.marquee-title{text-align:center;font-size:.85rem;color:var(--yellow);text-shadow:0 0 6px var(--yellow),2px 2px 0 rgba(0,0,0,.8);letter-spacing:.1em;margin-bottom:.3rem}
+.marquee-sub{text-align:center;font-size:.38rem;color:var(--cyan2);letter-spacing:.2em;text-transform:uppercase}
+.machine-face{background:var(--panel);border:4px solid var(--rim);padding:1.25rem 1.25rem 1rem}
+.credit-bar{display:flex;align-items:center;justify-content:space-between;background:var(--black);border:3px solid var(--rim);padding:.5rem .75rem;margin-bottom:1rem}
+.credit-label{font-size:.38rem;color:var(--cyan2);letter-spacing:.15em}
+.credit-value{font-family:'VT323',monospace;font-size:2rem;color:var(--green);text-shadow:0 0 5px var(--green);letter-spacing:.1em;line-height:1}
+.credit-suffix{font-size:.32rem;color:var(--rim);letter-spacing:.1em;text-align:right}
+.reel-housing{background:var(--black);border:4px solid var(--rim);padding:.75rem .5rem;margin-bottom:.75rem;position:relative}
+.reel-housing::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 3px,rgba(0,221,221,.02) 3px,rgba(0,221,221,.02) 4px);pointer-events:none}
+.reels-wrap{display:flex;gap:.5rem;justify-content:center;margin-bottom:.6rem}
+.reel-outer{flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.reel-window{width:100%;aspect-ratio:1;background:#050510;border:3px solid #333;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.reel-window::before{content:'';position:absolute;inset:0;border:2px solid transparent;box-shadow:inset 3px 3px 0 rgba(0,221,221,.15),inset -3px -3px 0 rgba(0,221,221,.05);pointer-events:none;z-index:2}
+.reel-symbol{font-family:'Press Start 2P',monospace;font-size:1.1rem;color:var(--cyan);text-shadow:0 0 6px var(--cyan);text-align:center;line-height:1.2;z-index:1;padding:.25rem}
+.reel-symbol.spinning{animation:pixel-spin .1s steps(2) infinite;color:var(--magenta);text-shadow:0 0 6px var(--magenta)}
+@keyframes pixel-spin{0%{opacity:.4;transform:translateY(-8px)}50%{opacity:1;transform:translateY(0)}100%{opacity:.4;transform:translateY(8px)}}
+.reel-window.win-flash{animation:pixel-win .25s steps(1) 6}
+@keyframes pixel-win{0%{background:#050510;border-color:#333}50%{background:#002200;border-color:var(--green)}}
+.hold-btn{font-family:'Press Start 2P',monospace;font-size:.3rem;color:var(--rim);background:var(--dark);border:2px solid var(--rim);padding:.3rem .4rem;width:100%;cursor:default;letter-spacing:.05em;text-align:center}
+.result-msg{font-family:'VT323',monospace;font-size:1.6rem;text-align:center;min-height:2rem;color:#666;letter-spacing:.1em;line-height:1}
+.result-msg.win-msg{color:var(--yellow);text-shadow:0 0 8px var(--yellow);animation:blink-win .4s steps(1) infinite}
+@keyframes blink-win{0%,100%{opacity:1}50%{opacity:.4}}
+.result-msg.lose-msg{color:#888}
+.control-panel{background:var(--mid);border:4px solid var(--rim);border-top:none;padding:1rem 1.25rem 1.25rem;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.spin-btn-wrap{position:relative;width:140px;height:56px}
+.spin-btn{position:absolute;inset:0;font-family:'Press Start 2P',monospace;font-size:.55rem;letter-spacing:.08em;color:var(--black);background:var(--yellow);border:none;cursor:pointer;box-shadow:0 6px 0 #886600,0 8px 0 rgba(0,0,0,.5);transition:transform .05s steps(1),box-shadow .05s steps(1);clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px)}
+.spin-btn:hover:not(:disabled){background:#ffff44}
+.spin-btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 2px 0 #886600,0 3px 0 rgba(0,0,0,.5)}
+.spin-btn:disabled{background:#333;color:#555;box-shadow:0 6px 0 #111,0 8px 0 rgba(0,0,0,.5);cursor:default}
+.code-box{display:none;width:100%;background:var(--black);border:3px solid var(--green);padding:.75rem;text-align:center;box-shadow:0 0 12px rgba(0,221,85,.3)}
+.code-win-label{font-size:.35rem;color:var(--green2);letter-spacing:.15em;margin-bottom:.5rem}
+.code-value{font-family:'VT323',monospace;font-size:2.2rem;color:var(--green);text-shadow:0 0 8px var(--green);letter-spacing:.2em;margin-bottom:.4rem}
+.code-note{font-size:.3rem;color:#448844;letter-spacing:.1em}
+.bottom-panel{background:var(--panel);border:4px solid var(--rim);border-top:2px solid var(--rim);padding:.6rem 1.25rem .5rem;clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px))}
+.coin-tray{background:var(--black);border:3px solid #222;border-top:3px solid #333;height:18px;box-shadow:inset 0 3px 0 rgba(0,0,0,.8)}
+/* ── Locked screen ── */
+.locked-screen{width:100%;max-width:480px;background:var(--panel);border:4px solid var(--rim);margin-top:1rem;padding:1.5rem;text-align:center;box-shadow:4px 4px 0 rgba(0,0,0,.6)}
+.locked-screen h2{font-size:.6rem;color:var(--red);letter-spacing:.1em;margin-bottom:1rem;text-shadow:0 0 6px var(--red)}
+.locked-screen p{font-family:'VT323',monospace;font-size:1.1rem;color:var(--muted);line-height:1.7;letter-spacing:.04em}
+.locked-screen .chapter-list{margin:1rem 0;text-align:left}
+.chapter-item{font-family:'VT323',monospace;font-size:1rem;padding:.4rem 0;letter-spacing:.04em;display:flex;align-items:center;gap:.5rem}
+.chapter-item.done{color:var(--green)}
+.chapter-item.done::before{content:'[OK]';font-size:.9rem;color:var(--green)}
+.chapter-item.done.used{color:#555}
+.chapter-item.done.used::before{content:'[USED]';color:#555}
+.chapter-item.locked{color:#555}
+.chapter-item.locked::before{content:'[  ]';color:#444}
+/* ── MCQ section ── */
+.mcq-section{width:100%;max-width:480px;margin-top:1rem;background:var(--panel);border:4px solid var(--rim);padding:1rem 1.25rem;box-shadow:4px 4px 0 rgba(0,0,0,.6)}
+.mcq-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:2px solid var(--rim)}
+.mcq-top h2{font-size:.42rem;color:var(--yellow);letter-spacing:.08em}
+.chapter-badge{font-size:.32rem;color:var(--cyan2);letter-spacing:.1em;text-align:right;line-height:1.5}
+.pip-row{display:flex;gap:4px}
+.pip{width:10px;height:10px;background:var(--rim);image-rendering:pixelated}
+.pip.earned{background:var(--yellow);box-shadow:0 0 4px var(--yellow)}
+.pip.wrong{background:var(--red);box-shadow:0 0 4px var(--red)}
+.question-text{font-family:'VT323',monospace;font-size:1.3rem;color:var(--white);line-height:1.5;margin-bottom:.75rem;letter-spacing:.03em}
+.options{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.6rem}
+.option-btn{font-family:'Press Start 2P',monospace;font-size:.42rem;text-align:left;padding:.55rem .7rem;background:var(--dark);border:2px solid var(--rim);color:var(--white);cursor:pointer;letter-spacing:.04em;line-height:1.6;box-shadow:2px 2px 0 rgba(0,0,0,.6)}
+.option-btn:hover:not(:disabled){background:var(--mid);border-color:var(--cyan);color:var(--cyan);box-shadow:3px 3px 0 rgba(0,0,0,.6)}
+.option-btn:disabled{cursor:default}
+.option-btn.correct{background:#002200;border-color:var(--green);color:var(--green);box-shadow:2px 2px 0 rgba(0,221,85,.3)}
+.option-btn.incorrect{background:#220000;border-color:var(--red);color:var(--red)}
+.q-feedback{font-family:'VT323',monospace;font-size:1.1rem;min-height:1.4rem;text-align:center;margin-bottom:.5rem;letter-spacing:.04em}
+.q-feedback.ok{color:var(--green);text-shadow:0 0 5px var(--green)}
+.q-feedback.err{color:var(--red)}
+.next-btn{display:none;width:100%;font-family:'Press Start 2P',monospace;font-size:.4rem;padding:.6rem;background:var(--dark);border:2px solid var(--cyan);color:var(--cyan);cursor:pointer;letter-spacing:.08em;box-shadow:2px 2px 0 rgba(0,0,0,.6)}
+.next-btn:hover{background:var(--mid);box-shadow:3px 3px 0 rgba(0,0,0,.6)}
+.session-done{display:none;text-align:center;padding:1rem 0}
+.session-done p{font-family:'VT323',monospace;font-size:1.1rem;color:#888;line-height:1.7;letter-spacing:.04em}
+.session-done strong{color:var(--yellow)}
+.vr-badge{display:inline-block;margin-top:1.25rem;font-size:.45rem;color:#f0f0f0;letter-spacing:.15em;text-align:center;text-transform:uppercase}
+.page-footer{margin-top:.75rem;font-size:.45rem;color:#f0f0f0;text-align:center;max-width:460px;letter-spacing:.08em;line-height:1.8}
+@media(max-width:400px){.page-header h1{font-size:1.2rem}.reel-symbol{font-size:.85rem}.marquee-title{font-size:.65rem}}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <h1>TOKEN EXCHANGE</h1>
+  <p class="sub">Behavioural Interventions &nbsp;·&nbsp; Dr R. May BCBA-D</p>
+</div>
+
+<div class="cabinet" id="cabinet">
+  <div class="marquee">
+    <div class="marquee-lights" id="marquee-lights"></div>
+    <div class="marquee-title">* INSERT KNOWLEDGE *</div>
+    <div class="marquee-sub">University of South Wales &nbsp;·&nbsp; ABA Edition</div>
+  </div>
+  <div class="machine-face">
+    <div class="credit-bar">
+      <div class="credit-label">SPINS</div>
+      <div class="credit-value" id="spins-count">00</div>
+      <div class="credit-suffix">AVAILABLE<br>CREDITS</div>
+    </div>
+    <div class="reel-housing">
+      <div class="reels-wrap">
+        <div class="reel-outer"><div class="reel-window" id="reel-0"><div class="reel-symbol" id="sym-0">VR</div></div><div class="hold-btn">HOLD</div></div>
+        <div class="reel-outer"><div class="reel-window" id="reel-1"><div class="reel-symbol" id="sym-1">DRO</div></div><div class="hold-btn">HOLD</div></div>
+        <div class="reel-outer"><div class="reel-window" id="reel-2"><div class="reel-symbol" id="sym-2">FCT</div></div><div class="hold-btn">HOLD</div></div>
+      </div>
+      <div class="result-msg" id="result-msg">COMPLETE A CHAPTER TO PLAY</div>
+    </div>
+  </div>
+  <div class="control-panel">
+    <div class="spin-btn-wrap"><button class="spin-btn" id="spin-btn" disabled onclick="doSpin()">SPIN</button></div>
+    <div class="code-box" id="code-box">
+      <div class="code-win-label">&gt;&gt; JACKPOT — SHOW DR MAY &lt;&lt;</div>
+      <div class="code-value" id="code-value"></div>
+      <div class="code-note">SCREENSHOT THIS CODE — ONE USE ONLY</div>
+    </div>
+  </div>
+  <div class="bottom-panel"><div class="coin-tray"></div></div>
+</div>
+
+<!-- Locked screen — shown when no visits available -->
+<div class="locked-screen" id="locked-screen" style="display:none">
+  <h2>ACCESS LOCKED</h2>
+  <p>Complete all frames in a chapter correctly to unlock a visit.</p>
+  <div class="chapter-list" id="chapter-list"></div>
+  <p>Return here after completing a chapter to earn your spins.</p>
+</div>
+
+<!-- MCQ section -->
+<div class="mcq-section" id="mcq-section" style="display:none">
+  <div class="mcq-top">
+    <h2 id="mcq-title">EARN A SPIN</h2>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <div class="chapter-badge" id="chapter-badge"></div>
+      <div class="pip-row" id="pip-row"></div>
+    </div>
+  </div>
+  <div class="question-text" id="question-text"></div>
+  <div class="options" id="options"></div>
+  <div class="q-feedback" id="q-feedback"></div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">NEXT &gt;</button>
+  <div class="session-done" id="session-done">
+    <p><strong id="earned-summary"></strong><br><br>COMPLETE ANOTHER CHAPTER<br>TO EARN MORE SPINS</p>
+  </div>
+</div>
+
+<div class="vr-badge">VR SCHEDULE &nbsp;·&nbsp; 10 PRIZE CODES LOADED</div>
+<p class="page-footer">REDEEMED CODES STORED IN YOUR BROWSER ONLY. NO DATA TRANSMITTED.</p>
+
+<script>
+// ── Symbols & schedule ────────────────────────────────────────────────────
+const SYMBOLS=['VR','FR','DRO','DRA','NCR','EXT','FCT','MO'];
+const WIN_PROB=1/50;
+
+// ── Prize codes ───────────────────────────────────────────────────────────
+const ALL_CODES=['WOLF-1847','BEAR-2391','HAWK-4782','LYNX-5613','ORCA-7294','IBIS-8037','WREN-9152','MINK-3476','KITE-6829','VOLE-1053','NEWT-4817','TEAL-7293','PUMA-2648','SWIFT-3901','RAVEN-5274','STOAT-6183','FINCH-8427','SHREW-9036','BISON-1792','CRANE-4058','GECKO-2317','HERON-5840','MARTEN-7412','NUTHATCH-286','OSPREY-5931','PLOVER-8274','QUAIL-1639','SISKIN-7823','TAWNY-2916','VIPER-6083','WAXWING-549','AVOCET-7134','BITTERN-2869','DOTTEREL-7528','EIDER-3096','FULMAR-8241','GARGANEY-573','HOOPOE-9612','JACAMAR-8053','KINGFISHER-219','MERLIN-4037','NIGHTJAR-6952','OUZEL-3481','PEREGRINE-870','REDSTART-5629','SANDERLING-41','TURNSTONE-768','WHIMBREL-3924','YELLOWHAMMER-62','DIPPER-5503'];
+
+// ── Chapter MCQ banks ─────────────────────────────────────────────────────
+// Each chapter keyed by its frame prefix (f, a, e)
+const MCQ_BANKS = {
+ 
+  g: {
+    name: 'Selecting Intervention Goals',
+    questions: [
+      {q:"Intervention goals should be habilitative, meaning they should describe what the learner will __________, not just what they will stop doing.",options:["AVOID","DO","REDUCE","ELIMINATE"],correct:1,feedback:"Habilitative goals build adaptive behaviour and increase access to reinforcement — they focus on what the learner will do rather than exclusively on reducing problem behaviour."},
+      {q:"The degree to which an intervention goal is appropriate and meaningful for the individual is referred to as __________ validity.",options:["ECOLOGICAL","SOCIAL","EXTERNAL","CONSTRUCT"],correct:1,feedback:"Social validity — goals must be meaningful to the individual and valued by those around them. Goals that are achievable but not valued will not be maintained after intervention ends."},
+      {q:"Behaviours that open access to new environments and contingencies, producing broad changes across the learner's repertoire, are called behavioural __________.",options:["PIVOTS","CUSPS","KEYSTONES","ANCHORS"],correct:1,feedback:"Behavioural cusps are prerequisites that unlock disproportionately large repertoire changes — targeting them maximises the impact of intervention."},
+      {q:"A target behaviour definition that describes the physical form of the behaviour — regardless of its outcome — is called a __________ -based definition.",options:["FUNCTION","TOPOGRAPHY","OUTCOME","OPERANT"],correct:1,feedback:"Topography-based definitions describe the physical structure of the behaviour. Useful when the form of the behaviour is what matters clinically."},
+      {q:"The three essential properties of a good operational definition are that it must be objective, clear, and __________.",options:["RELIABLE","COMPLETE","VALID","SPECIFIC"],correct:1,feedback:"Objective (observable, not inferential), clear (unambiguous), complete (boundaries specified). Together these enable reliable, consistent measurement."},
+      {q:"By BACB ethical standards, implementing an intervention without first conducting a functional behaviour assessment is considered __________.",options:["BEST PRACTICE","UNETHICAL","OPTIONAL","ACCEPTABLE"],correct:1,feedback:"The BACB requires interventions to be logically linked to FBA results. Skipping the FBA is an ethical violation — not merely a technical shortcut."},
+      {q:"The principle of least restrictive alternative requires that interventions afford more __________ than risk.",options:["CHOICE","BENEFIT","STRUCTURE","EVIDENCE"],correct:1,feedback:"Least restrictive alternative requires a genuine cost-benefit analysis — more benefit than risk, least distress, and maximum choice for the individual."},
+      {q:"Consumer evaluations, normative comparisons, and rating scales such as the IRP-15 are all methods for measuring __________.",options:["TREATMENT FIDELITY","SOCIAL VALIDITY","RISK OF BIAS","CLINICAL EXPERTISE"],correct:1,feedback:"These are social validity measurement methods — assessing whether goals, procedures, and outcomes are acceptable and meaningful to stakeholders."},
+      {q:"Concurrent-chains evaluations provide a direct behavioural measure of __________ by observing which option the individual selects.",options:["TREATMENT FIDELITY","PREFERENCE","SKILL LEVEL","REINFORCER MAGNITUDE"],correct:1,feedback:"Concurrent-chains evaluations measure preference behaviourally rather than verbally — particularly valuable with individuals who cannot communicate vocally."},
+      {q:"According to Slocum et al. (2014), recognising the need for outside consultation and committing to ongoing professional development are components of __________.",options:["SOCIAL VALIDITY","CLINICAL EXPERTISE","EVIDENCE-BASED PRACTICE","RISK ASSESSMENT"],correct:1,feedback:"Clinical expertise — Slocum et al. identified multiple components including data-based decision making, responsiveness to client values, and knowing when to seek consultation."}
+    ]
+  },
+ 
+  v: {
+    name: 'Evidence-Based Practice',
+    questions: [
+      {q:"Evidence-based practice integrates the best available research evidence with clinical expertise and __________.",options:["INSTITUTIONAL POLICY","CLIENT VALUES","TREATMENT HISTORY","RESOURCE AVAILABILITY"],correct:1,feedback:"EBP has three components: best available evidence, clinical expertise, and client values. All three must be integrated — none alone is sufficient."},
+      {q:"PRISMA stands for Preferred Reporting Items for Systematic Reviews and __________.",options:["METHODOLOGICAL APPRAISALS","META-ANALYSES","MANUSCRIPT AUDITS","MODERATED ANALYSES"],correct:1,feedback:"PRISMA — Preferred Reporting Items for Systematic Reviews and Meta-Analyses — is the primary reporting standard for systematic reviews."},
+      {q:"AMSTAR-2 is used to assess the __________ quality of systematic reviews.",options:["REPORTING","METHODOLOGICAL","STATISTICAL","EDITORIAL"],correct:1,feedback:"AMSTAR-2 assesses methodological conduct — including search strategy, risk of bias assessment, and handling of heterogeneity — not just reporting quality."},
+      {q:"Pre-registration of a systematic review in PROSPERO reduces the risk of __________ switching after results are known.",options:["PARTICIPANT","OUTCOME","DESIGN","SAMPLE"],correct:1,feedback:"Pre-registration creates a time-stamped public record of planned outcomes and methods, making post-hoc changes detectable and preventing outcome switching."},
+      {q:"An asymmetric funnel plot in a meta-analysis is a visual indicator of possible __________ bias.",options:["SELECTION","DETECTION","PUBLICATION","PERFORMANCE"],correct:2,feedback:"Publication bias — null findings are missing from the literature, creating asymmetry in the funnel plot and inflating the apparent effect size."},
+      {q:"HARKing involves presenting __________ findings as if they were theory-driven predictions made before data collection.",options:["NEGATIVE","EXPLORATORY","REPLICATED","SIGNIFICANT"],correct:1,feedback:"HARKing (Hypothesising After Results are Known) misrepresents exploratory findings as confirmatory, inflating their evidential value."},
+      {q:"Registered reports address publication bias by committing to publish a study based on the quality of the __________, before results are known.",options:["RESULTS","DISCUSSION","INTRODUCTION AND METHODS","REFERENCES"],correct:2,feedback:"Registered reports decouple the publication decision from the results — a study meeting methodological standards is published regardless of whether findings are positive, null, or negative."},
+      {q:"Open data, open materials, and open analysis code are all practices associated with __________.",options:["CLINICAL GOVERNANCE","OPEN SCIENCE","EVIDENCE SYNTHESIS","RISK ASSESSMENT"],correct:1,feedback:"Open science practices make research transparent and verifiable — enabling independent replication, error detection, and secondary analysis."},
+      {q:"P-hacking refers to making flexible analytical decisions until a __________ result is obtained.",options:["REPLICABLE","SIGNIFICANT","NEGATIVE","PUBLISHED"],correct:1,feedback:"P-hacking exploits researcher degrees of freedom to find a p-value below .05, inflating the probability of false positives in the literature."},
+      {q:"Detection bias in single-case research includes assessor blinding, selective outcome reporting, dependent variable reliability, and adequacy of __________.",options:["SAMPLE SIZE","DATA SAMPLING","RANDOMISATION","BLINDING"],correct:1,feedback:"Detection bias addresses how outcomes are measured — including whether data sampling was sufficient to determine level and trend, and whether all planned outcomes were reported."}
+    ]
+  },
+ 
+  f: {
+    name: 'Differential Reinforcement',
+    questions: [
+      {q:"Differential reinforcement involves reinforcing one response class and __________ reinforcement for another.",options:["WITHHOLDING","INCREASING","DOUBLING","SCHEDULING"],correct:0,feedback:"Withholding reinforcement for the problem behaviour is the second essential component of differential reinforcement."},
+      {q:"DRA can be conceptualised as a __________ schedule in which two response classes compete.",options:["FIXED RATIO","CONCURRENT","MULTIPLE","TANDEM"],correct:1,feedback:"DRA is a concurrent schedule — both response classes operate under different contingencies simultaneously."},
+      {q:"When the alternative behaviour in DRA cannot co-occur with the problem behaviour, the procedure is:",options:["DNRA","DRO","DRI","DRL"],correct:2,feedback:"DRI — Differential Reinforcement of Incompatible behaviour — is a subtype of DRA."},
+      {q:"The reemergence of problem behaviour when reinforcement for the alternative is reduced is called:",options:["SPONT. RECOVERY","RESURGENCE","EXTINCTION BURST","RESP. VARIATION"],correct:1,feedback:"Resurgence occurs when reinforcement for the alternative behaviour is weakened or discontinued."},
+      {q:"DRL is selected when the __________ of a behaviour is problematic, not its form.",options:["TOPOGRAPHY","FUNCTION","RATE","MAGNITUDE"],correct:2,feedback:"DRL targets rate reduction — the behaviour itself is appropriate, just occurring too frequently."},
+      {q:"With interval DRO, if problem behaviour occurs during the interval, the interval is:",options:["ENDED + REINFORCED","RESET","HALVED","IGNORED"],correct:1,feedback:"Any occurrence resets the interval — the learner must complete the full interval without problem behaviour."},
+      {q:"Momentary DRO checks for the problem behaviour:",options:["THROUGHOUT","AT THE START","AT THE END POINT","RANDOMLY"],correct:2,feedback:"Momentary DRO only checks at the exact end-point of each interval, not throughout."},
+      {q:"The initial DRO interval should be set at or slightly __________ the mean baseline IRT.",options:["ABOVE","BELOW","2x THE IRT","INDEPENDENT OF"],correct:1,feedback:"Starting below the mean IRT ensures the learner contacts reinforcement frequently at the outset."},
+      {q:"Which DRL variant reinforces each response separated from the previous by a minimum IRT?",options:["FULL-SESSION","INTERVAL","SPACED-RESPONDING","VARIABLE"],correct:2,feedback:"Spaced-responding DRL reinforces each qualifying response individually based on the IRT criterion."},
+      {q:"The matching law predicts responding is allocated in proportion to relative:",options:["RESPONSE EFFORT","REINF. RATES","SESSION LENGTH","INSTR. FREQUENCY"],correct:1,feedback:"Response allocation matches the relative rate of reinforcement across concurrent schedules."}
+    ]
+  },
+ 
+  a: {
+    name: 'Antecedent Interventions',
+    questions: [
+      {q:"Function-based antecedent interventions manipulate at least one component of the __________ maintaining the problem behaviour.",options:["SETTING EVENT","CONTINGENCY","REINFORCER HISTORY","RESPONSE CLASS"],correct:1,feedback:"Function-based interventions directly target the identified maintaining contingency — derived from functional assessment."},
+      {q:"Default antecedent interventions do not depend on identifying the __________ of the problem behaviour.",options:["TOPOGRAPHY","MAGNITUDE","FUNCTION","SETTING"],correct:2,feedback:"Default interventions work regardless of function — no functional assessment required."},
+      {q:"NCR functions as an abolishing operation because it:",options:["PUNISHES BEHAVIOUR","FREELY DELIVERS THE REINFORCER","BLOCKS SENSORY FB","INCREASES EFFORT"],correct:1,feedback:"Freely delivering the maintaining reinforcer reduces its current value and motivation to engage in problem behaviour."},
+      {q:"The high-p instructional sequence builds __________ momentum before the low-p instruction.",options:["COGNITIVE","PHYSIOLOGICAL","BEHAVIOURAL","SOCIAL"],correct:2,feedback:"Reinforced compliance with high-p instructions creates behavioural momentum that carries over to the low-p instruction."},
+      {q:"FCT establishes a communicative response that is __________ equivalent to the problem behaviour.",options:["STRUCTURAL","FUNCTIONAL","TOPOGRAPHICAL","SOCIAL"],correct:1,feedback:"The communicative response produces the same reinforcer as the problem behaviour — functional equivalence."},
+      {q:"The three phases of the IISCA are interview, observation, and:",options:["TREATMENT","ANALYSIS","BASELINE","GENERALISATION"],correct:1,feedback:"Interview → observation → analysis (alternating synthesised test and control conditions)."},
+      {q:"Skills-based treatment (SBT) teaches toleration, manding, and:",options:["DISCRIM. TRAINING","CONTEXTUAL CONTROL","STIMULUS FADING","RESP. BLOCKING"],correct:1,feedback:"Contextual control teaches the learner to discriminate when manding will and will not produce reinforcement."},
+      {q:"NCR with negative reinforcement is used when problem behaviour is maintained by:",options:["ATTENTION","TANGIBLES","ESCAPE","AUTOMATIC REINF."],correct:2,feedback:"NCR matches function — escape-maintained behaviour receives noncontingent escape on a time-based schedule."},
+      {q:"The enriched environment intervention is most effective for behaviour maintained by:",options:["ATTENTION","ESCAPE","AUTOMATIC REINF.","TANGIBLES"],correct:2,feedback:"Enriched environments provide competing stimulation, most effective for automatically reinforced behaviour."},
+      {q:"FCT requires that the problem behaviour be placed on __________ while the communicative response is reinforced.",options:["DRL","A LEAN SCHEDULE","EXTINCTION","TIME-OUT"],correct:2,feedback:"Without extinction of the problem behaviour, both responses access the reinforcer — no differential contingency exists."}
+    ]
+  },
+ 
+  e: {
+    name: 'Extinction',
+    questions: [
+      {q:"As a procedure, extinction provides __________ probability of reinforcement for the target behaviour.",options:["REDUCED","ZERO","INTERMITTENT","DELAYED"],correct:1,feedback:"As a procedure, extinction means zero probability of reinforcement — completely withheld, not merely reduced."},
+      {q:"Escape extinction involves:",options:["WITHHOLDING ATTENTION","CONTINUING DEMANDS","DELIVERING NCR","BLOCKING SENSORY FB"],correct:1,feedback:"Escape extinction means the aversive stimulus continues despite problem behaviour."},
+      {q:"The temporary increase in responding at the onset of extinction is called an extinction:",options:["BURST","SURGE","SPIKE","WAVE"],correct:0,feedback:"An extinction burst is a temporary increase in frequency, intensity, or duration at the onset of extinction."},
+      {q:"Behaviour on a VR schedule is __________ resistant to extinction than behaviour on CRF.",options:["LESS","EQUALLY","MORE","UNPREDICTABLY"],correct:2,feedback:"Variable schedules produce greater resistance to extinction — the partial-reinforcement extinction effect."},
+      {q:"Sensory extinction is used for behaviour maintained by:",options:["SOCIAL POSITIVE","ESCAPE","AUTOMATIC REINF.","TANGIBLES"],correct:2,feedback:"Sensory extinction masks or removes the automatic sensory reinforcement produced by the behaviour."},
+      {q:"Treatment integrity failures during extinction are damaging because they create:",options:["AN EXT. BURST","INTERMITTENT REINF.","SPONT. RECOVERY","RESP. VARIATION"],correct:1,feedback:"Inconsistent implementation creates partial reinforcement, increasing resistance to extinction."},
+      {q:"Extinction should NOT be used alone when the behaviour is:",options:["LOW FREQUENCY","HARMFUL/DANGEROUS","EASILY OBSERVED","AUTO REINFORCED"],correct:1,feedback:"Dangerous behaviour may worsen during an extinction burst, making extinction alone inappropriate."},
+      {q:"The reemergence of extinguished behaviour after a period away from the extinction context is called:",options:["RESURGENCE","SPONT. RECOVERY","RESP. VARIATION","EXT. BURST"],correct:1,feedback:"Spontaneous recovery — expected after a break from the extinction context, not a treatment failure."},
+      {q:"Extinction is more effective when combined with __________ for appropriate behaviour.",options:["PUNISHMENT","REINFORCEMENT","NCR","RESPONSE BLOCKING"],correct:1,feedback:"Combining extinction with reinforcement of alternative behaviour reduces side effects and produces more durable outcomes."},
+      {q:"Signalled extinction produces __________ suppression than unsignalled extinction.",options:["LESS","EQUAL","MORE","SLOWER"],correct:2,feedback:"Signalled extinction enables the learner to discriminate when reinforcement is unavailable, producing faster suppression."}
+    ]
+  },
+  
+  t: {
+  name: 'Treatment Fidelity',
+  questions: [
+    {q:"A researcher documents high IOA but collects no fidelity data. What remains unverified?",options:["DEPENDENT VARIABLE","INDEPENDENT VARIABLE","MEASUREMENT SYSTEM","OBSERVER TRAINING"],correct:1,feedback:"IOA verifies the DV. Treatment fidelity verifies the IV. High IOA with no fidelity data leaves the independent variable entirely unverified."},
+    {q:"A practitioner implements every prescribed step but delivers instructions poorly. This is a problem of _______.",options:["OMISSION","COMMISSION","ADHERENCE","COMPETENCE"],correct:3,feedback:"Adherence concerns whether steps were implemented; competence concerns how well. High adherence with low competence is possible and can produce poor outcomes."},
+    {q:"Bergmann et al. (2021) found that reinforcement errors on 20%+ of trials delayed acquisition. The implied integrity threshold for skill acquisition is _______ percent.",options:["75","80","85","90"],correct:2,feedback:"At 85%+ integrity most participants reached mastery; at 80% or below, acquisition was delayed or prevented."},
+    {q:"Gradual unplanned deviation from a protocol driven by practitioner style or reduced supervision is called therapeutic _______.",options:["DRIFT","FADING","SHAPING","ADAPTATION"],correct:0,feedback:"Therapeutic drift is unplanned and typically unrecognised by the implementer. Ongoing fidelity monitoring is the primary mechanism for detecting it."},
+    {q:"Component-level integrity data are preferred over global scores when the goal is to identify which specific _______ are failing.",options:["SESSIONS","CLIENTS","STEPS","OUTCOMES"],correct:2,feedback:"A high global score can mask consistent failure on individual steps. Component data reveal exactly where retraining is needed."}
+  ]
+},
+
+ b: {
+  name: 'Engagement in Behavioural Interventions',
+  questions: [
+    {q:"An intervention works well in a controlled trial but produces little change in routine community settings. This gap is most likely explained by _______.",options:["SAMPLE SIZE","THEORETICAL BASIS","ENGAGEMENT","MEASUREMENT ERROR"],correct:2,feedback:"The efficacy-effectiveness gap is most commonly explained by poor engagement outside controlled conditions — the active ingredients are not contacted as intended."},
+    {q:"Evidence that an intervention can produce change when implemented correctly under controlled conditions is a demonstration of its _______.",options:["EFFICACY","EFFECTIVENESS","SOCIAL VALIDITY","FIDELITY"],correct:0,feedback:"Efficacy = what an intervention can achieve under optimal conditions. Effectiveness = real-world performance. High efficacy does not guarantee high effectiveness."},
+    {q:"Wolf (1978) proposed interventions be evaluated on goals, procedures, and _______.",options:["FIDELITY","EFFECTS","DESIGN","STAFFING"],correct:1,feedback:"Social validity has three dimensions: significance of goals, appropriateness of procedures, and importance of effects. Low social validity on any dimension predicts disengagement."},
+    {q:"Factors that reduce the reinforcing value of engaging — such as high response effort or poor contextual fit — function as _______ operations.",options:["ESTABLISHING","DISCRIMINATIVE","ABOLISHING","CONDITIONED"],correct:2,feedback:"Abolishing operations reduce the value of a reinforcer and therefore the probability of the behaviour that produces it. Identifying and addressing them is prerequisite for sustained engagement."},
+    {q:"For sustained behaviour change, the goal is to move from deliberate effortful responding to behaviour automatically prompted by _______.",options:["PRACTITIONER PROMPTS","ENVIRONMENTAL CUES","WRITTEN REMINDERS","SCHEDULED REVIEWS"],correct:1,feedback:"Habitual behaviour is stimulus-controlled — reliably evoked by environmental cues without deliberate decision-making. Building stimulus control in the natural environment is the mechanism for long-term maintenance."}
+  ]
+}
+ 
+};
+
+// ── Chapter display names ─────────────────────────────────────────────────
+const CHAPTER_DISPLAY = {
+  g: 'Ch.1: Selecting Intervention Goals',
+  v: 'Ch.2: Evidence-Based Practice',
+  f: 'Ch.3: Differential Reinforcement',
+  a: 'Ch.4: Antecedent Interventions',
+  e: 'Ch.5: Extinction',
+  t: 'Ch.6: Treatment Fidelity',
+  b: 'Ch.7: Engagement'
+  
+};
+ 
+
+// ── State ─────────────────────────────────────────────────────────────────
+let spinsAvailable=0,isSpinning=false,sessionQuestions=[],currentQIndex=0;
+let sessionSpinsEarned=0,sessionComplete=false,pipStates=[];
+let activeChapter=null;
+let lightStep=0;
+let clickInterval=null;
+let audioCtx=null;
+
+// ── localStorage helpers ──────────────────────────────────────────────────
+function getCompletions(){try{return JSON.parse(localStorage.getItem('ba_chapter_completions')||'{}')}catch{return{}}}
+function saveCompletions(r){try{localStorage.setItem('ba_chapter_completions',JSON.stringify(r))}catch{}}
+function getUsedCodes(){try{return JSON.parse(localStorage.getItem('ba_used_codes')||'[]')}catch{return[]}}
+function markCodeUsed(c){const u=getUsedCodes();if(!u.includes(c))u.push(c);try{localStorage.setItem('ba_used_codes',JSON.stringify(u))}catch{}}
+function getAvailableCode(){const u=getUsedCodes();const a=ALL_CODES.filter(c=>!u.includes(c));if(!a.length)return null;return a[Math.floor(Math.random()*a.length)]}
+function getSessionState(){try{return JSON.parse(sessionStorage.getItem('ba_slot_session')||'null')}catch{return null}}
+function saveSessionState(s){try{sessionStorage.setItem('ba_slot_session',JSON.stringify(s))}catch{}}
+
+// ── Find an available (completed, visit unused) chapter ───────────────────
+function getAvailableChapter(){
+  const rec=getCompletions();
+  for(const prefix of ['g','v','f','a','e','t','b']){
+    if(rec[prefix]&&rec[prefix].completed&&!rec[prefix].visitUsed){
+      return prefix;
+    }
+  }
+  return null;
+}
+
+// ── Mark visit as used ────────────────────────────────────────────────────
+function markVisitUsed(prefix){
+  const rec=getCompletions();
+  if(rec[prefix])rec[prefix].visitUsed=true;
+  saveCompletions(rec);
+}
+
+// ── Lights ────────────────────────────────────────────────────────────────
+function initLights(){
+  const row=document.getElementById('marquee-lights');
+  row.innerHTML='';
+  const colours=['on-y','on-c','on-m'];
+  const count=24;
+  for(let i=0;i<count;i++){const b=document.createElement('div');b.className='bulb';row.appendChild(b)}
+  setInterval(()=>{
+    lightStep=(lightStep+1)%3;
+    const bulbs=row.querySelectorAll('.bulb');
+    bulbs.forEach((b,i)=>{b.className='bulb';if((i+lightStep)%3===0)b.className='bulb '+colours[i%3]});
+  },180);
+}
+
+// ── Audio ─────────────────────────────────────────────────────────────────
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
+function playTone(freq,type,vol,dur,start){try{const ctx=getAudio();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=type;o.frequency.setValueAtTime(freq,ctx.currentTime+(start||0));g.gain.setValueAtTime(vol,ctx.currentTime+(start||0));g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+(start||0)+dur);o.start(ctx.currentTime+(start||0));o.stop(ctx.currentTime+(start||0)+dur)}catch(e){}}
+function playClick(){playTone(220,'square',0.06,0.04)}
+function playReelStop(i){playTone([330,440,550][i],'square',0.1,0.12)}
+function playWin(){[523,659,784,1047].forEach((f,i)=>playTone(f,'square',0.08,0.2,i*0.12))}
+function playCorrect(){playTone(660,'square',0.07,0.1);setTimeout(()=>playTone(880,'square',0.07,0.1),100)}
+function playWrong(){try{const ctx=getAudio();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='square';o.frequency.setValueAtTime(200,ctx.currentTime);o.frequency.linearRampToValueAtTime(100,ctx.currentTime+0.2);g.gain.setValueAtTime(0.07,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2);o.start(ctx.currentTime);o.stop(ctx.currentTime+0.2)}catch(e){}}
+function startClick(){clickInterval=setInterval(playClick,80)}
+function stopClick(){if(clickInterval){clearInterval(clickInterval);clickInterval=null}}
+
+// ── Build chapter status list ─────────────────────────────────────────────
+function renderChapterList(){
+  const el=document.getElementById('chapter-list');
+  if(!el)return;
+  el.innerHTML='';
+  const rec=getCompletions();
+  Object.entries(CHAPTER_DISPLAY).forEach(([prefix,name])=>{
+    const div=document.createElement('div');
+    const completed=rec[prefix]&&rec[prefix].completed;
+    const used=completed&&rec[prefix].visitUsed;
+    div.className='chapter-item'+(completed?' done':'  locked')+(used?' used':'');
+    div.textContent=name;
+    el.appendChild(div);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+function init(){
+  initLights();
+
+  // Check for a saved mid-session
+  const saved=getSessionState();
+  const avail=getAvailableChapter();
+
+  if(saved&&saved.complete){
+    // Session done, check if more chapters unlocked
+    spinsAvailable=saved.spinsRemaining||0;
+    activeChapter=saved.chapter||null;
+    sessionComplete=true;
+    pipStates=saved.pipStates||Array(5).fill('');
+    showMachine();
+    showSessionComplete(saved.spinsEarned||0);
+  } else if(saved&&!saved.complete&&saved.chapter){
+    // Resume mid-session
+    spinsAvailable=saved.spinsRemaining||0;
+    activeChapter=saved.chapter;
+    sessionQuestions=saved.questions;
+    currentQIndex=saved.qIndex;
+    sessionSpinsEarned=saved.spinsEarned||0;
+    pipStates=saved.pipStates||Array(5).fill('');
+    showMachine();
+    renderQuestion();
+  } else if(avail){
+    // New visit available
+    activeChapter=avail;
+    markVisitUsed(avail);
+    spinsAvailable=0;sessionSpinsEarned=0;currentQIndex=0;
+    pipStates=Array(5).fill('');
+    const bank=MCQ_BANKS[avail].questions;
+    sessionQuestions=[...bank].sort(()=>Math.random()-.5).slice(0,5);
+    saveSessionState({complete:false,chapter:avail,questions:sessionQuestions,qIndex:0,spinsRemaining:0,spinsEarned:0,pipStates});
+    showMachine();
+    renderQuestion();
+  } else {
+    // Locked
+    showLocked();
+  }
+
+  updateSpinsDisplay();
+  updateSpinBtn();
+  renderPips();
+}
+
+function showMachine(){
+  document.getElementById('mcq-section').style.display='block';
+  document.getElementById('locked-screen').style.display='none';
+  document.getElementById('result-msg').textContent='ANSWER TO EARN SPINS';
+}
+
+function showLocked(){
+  document.getElementById('mcq-section').style.display='none';
+  document.getElementById('locked-screen').style.display='block';
+  document.getElementById('result-msg').textContent='COMPLETE A CHAPTER TO PLAY';
+  renderChapterList();
+}
+
+// ── Pips ──────────────────────────────────────────────────────────────────
+function renderPips(){
+  const row=document.getElementById('pip-row');
+  if(!row)return;
+  row.innerHTML='';
+  pipStates.forEach(state=>{const p=document.createElement('div');p.className='pip'+(state?' '+state:'');row.appendChild(p)});
+}
+
+// ── Questions ─────────────────────────────────────────────────────────────
+function renderQuestion(){
+  if(currentQIndex>=sessionQuestions.length){endSession();return}
+  const q=sessionQuestions[currentQIndex];
+  document.getElementById('mcq-title').textContent='Q'+(currentQIndex+1)+' OF 5 — EARN A SPIN';
+  if(activeChapter&&MCQ_BANKS[activeChapter]){
+    document.getElementById('chapter-badge').textContent=MCQ_BANKS[activeChapter].name.toUpperCase();
+  }
+  document.getElementById('question-text').textContent=q.q;
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('q-feedback').className='q-feedback';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('session-done').style.display='none';
+  const el=document.getElementById('options');el.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';btn.textContent=opt;
+    btn.onclick=()=>answerQuestion(i,q,btn);
+    el.appendChild(btn);
+  });
+  renderPips();
+}
+
+function answerQuestion(index,q,clickedBtn){
+  document.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+  const correct=index===q.correct;
+  clickedBtn.classList.add(correct?'correct':'incorrect');
+  document.querySelectorAll('.option-btn')[q.correct].classList.add('correct');
+  const fb=document.getElementById('q-feedback');
+  if(correct){
+    playCorrect();
+    spinsAvailable++;sessionSpinsEarned++;
+    fb.textContent='> CORRECT! SPIN EARNED <';fb.className='q-feedback ok';
+    pipStates[currentQIndex]='earned';
+    updateSpinsDisplay();updateSpinBtn();
+  }else{
+    playWrong();
+    fb.textContent=q.feedback;fb.className='q-feedback err';
+    pipStates[currentQIndex]='wrong';
+  }
+  renderPips();
+  saveSessionState({complete:false,chapter:activeChapter,questions:sessionQuestions,qIndex:currentQIndex+1,spinsRemaining:spinsAvailable,spinsEarned:sessionSpinsEarned,pipStates});
+  document.getElementById('next-btn').style.display='block';
+}
+
+function nextQuestion(){currentQIndex++;currentQIndex>=sessionQuestions.length?endSession():renderQuestion()}
+
+function endSession(){
+  saveSessionState({complete:true,chapter:activeChapter,spinsRemaining:spinsAvailable,spinsEarned:sessionSpinsEarned,pipStates});
+  sessionComplete=true;showSessionComplete(sessionSpinsEarned);
+}
+
+function showSessionComplete(earned){
+  document.getElementById('options').innerHTML='';
+  document.getElementById('question-text').textContent='';
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('mcq-title').textContent='SESSION COMPLETE';
+  document.getElementById('chapter-badge').textContent='';
+  const sc=document.getElementById('session-done');sc.style.display='block';
+  document.getElementById('earned-summary').textContent='YOU EARNED '+earned+' SPIN'+(earned!==1?'S':'')+' THIS SESSION';
+}
+
+// ── Spin ──────────────────────────────────────────────────────────────────
+function isWin(){return Math.random()<WIN_PROB}
+
+function doSpin(){
+  if(spinsAvailable<=0||isSpinning)return;
+  spinsAvailable--;isSpinning=true;
+  updateSpinsDisplay();updateSpinBtn();
+  document.getElementById('result-msg').textContent='SPINNING...';
+  document.getElementById('result-msg').className='result-msg';
+  document.getElementById('code-box').style.display='none';
+  [0,1,2].map(i=>document.getElementById('sym-'+i)).forEach(s=>s.classList.add('spinning'));
+  startClick();
+  const win=isWin();
+  let final;
+  if(win){const s=SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)];final=[s,s,s]}
+  else{do{final=[0,1,2].map(()=>SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)])}while(final[0]===final[1]&&final[1]===final[2])}
+  setTimeout(()=>{stopReel(0,final[0]);playReelStop(0)},500);
+  setTimeout(()=>{stopReel(1,final[1]);playReelStop(1)},850);
+  setTimeout(()=>{stopReel(2,final[2]);stopClick();playReelStop(2)},1200);
+  setTimeout(()=>resolveOutcome(win,final),1500);
+  const saved=getSessionState();
+  if(saved){saved.spinsRemaining=spinsAvailable;saveSessionState(saved)}
+}
+
+function stopReel(i,sym){const el=document.getElementById('sym-'+i);el.classList.remove('spinning');el.textContent=sym}
+
+function resolveOutcome(win,final){
+  isSpinning=false;updateSpinBtn();
+  if(win){
+    playWin();
+    [0,1,2].forEach(i=>{const r=document.getElementById('reel-'+i);r.classList.add('win-flash');setTimeout(()=>r.classList.remove('win-flash'),1500)});
+    const msg=document.getElementById('result-msg');msg.textContent='** JACKPOT! **';msg.className='result-msg win-msg';
+    const code=getAvailableCode();
+    if(code){markCodeUsed(code);document.getElementById('code-value').textContent=code;document.getElementById('code-box').style.display='block'}
+    else{msg.textContent='WINNER — ALL CODES USED! SEE DR MAY'}
+  }else{
+    const twoMatch=(final[0]===final[1]||final[1]===final[2]||final[0]===final[2]);
+    const msgs=twoMatch?['SO CLOSE! ONE MORE...','NEARLY THERE...','JUST MISSED!']:['NOT THIS TIME','TRY AGAIN','THE VR WILL PAY OFF','NO WIN','KEEP SPINNING'];
+    const msg=document.getElementById('result-msg');msg.textContent=msgs[Math.floor(Math.random()*msgs.length)];msg.className='result-msg lose-msg';
+  }
+}
+
+function updateSpinsDisplay(){const n=spinsAvailable;document.getElementById('spins-count').textContent=n<10?'0'+n:String(n)}
+function updateSpinBtn(){const btn=document.getElementById('spin-btn');btn.disabled=spinsAvailable<=0||isSpinning;btn.textContent=isSpinning?'...':spinsAvailable>0?'SPIN ('+spinsAvailable+')':'SPIN'}
+
+init();
+</script>
+</body>
+</html>
