@@ -138,9 +138,9 @@ window.PI_FRAMES = {
 
   "g21": {
     label: "DISCRIMINATION FRAME",
-    stem: "A practitioner defines aggression as 'any behaviour that upsets another person.' Is this an objective definition? Answer yes or no.",
+    stem: "A practitioner defines aggression as: 'Forcefully striking a peer with an open palm with the intent to cause distress.' Is this a good operational definition? Answer yes or no.",
     acceptable: ["no"],
-    feedback: "No — 'upsets another person' is inferential and subjective. It requires the observer to infer an internal state in another person rather than describing directly observable behaviour. Two observers could disagree substantially on whether a given response 'upset' someone."
+    feedback: "Correct. Although 'striking with an open palm' is a topographical description, the inclusion of **'intent to cause distress'** makes it subjective. 'Intent' is an unobservable mentalistic construct that cannot be directly measured by an observer."
   },
 
   // ── SECTION 3: Selecting Interventions — Overview ─────────────────────────

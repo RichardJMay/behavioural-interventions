@@ -31,9 +31,9 @@ window.PI_FRAMES = {
 
   "v4": {
     label: "DISCRIMINATION FRAME",
-    stem: "A practitioner selects an intervention because a colleague reports it works well. Is this sufficient basis for evidence-based practice? Answer yes or no.",
+    stem: "An entry-level practitioner chooses an intervention because they are 'drawing on the clinical expertise' of a senior supervisor who has used it for years. Does this satisfy the requirements of Evidence-Based Practice (EBP)? Answer yes or no.",
     acceptable: ["no"],
-    feedback: "No — clinical experience (n-of-1) does not constitute an adequate evidence base. EBP requires systematic evaluation of the broader literature, considering the number, quality, and consistency of studies."
+    feedback: "Correct. While clinical expertise is a pillar of EBP, it cannot be used to bypass the requirement for scientific evidence. Expertise is meant to guide the *application* of established research to specific cases, not to justify the use of unproven or pseudoscientific methods based solely on a senior's 'authority' or personal experience."
   },
 
   // ── SECTION 2: Systematic Reviews ─────────────────────────────────────────
@@ -58,22 +58,22 @@ window.PI_FRAMES = {
   },
 
   "v8": {
-    label: "DISCRIMINATION FRAME",
-    stem: "A practitioner reads a literature review in which the author selected studies they personally found relevant. Is this equivalent to a systematic review? Answer yes or no.",
-    acceptable: ["no"],
-    feedback: "No — a narrative literature review lacks the pre-specified search strategy, objective eligibility criteria, and risk of bias assessment that define a systematic review. It is much more susceptible to selection bias and confirmation bias."
-  },
-
-  "v9": {
     stem: "Pre-registration of a systematic review involves publicly registering the review ___________ — including the research questions, search strategy, and planned analyses — before data collection begins.",
     acceptable: ["protocol"],
     feedback: "A Preregistered protocol prevents post-hoc changes to outcomes, methods, or inclusion criteria after results are known. This is critical because changing these elements after seeing the data introduces bias even if done unconsciously."
   },
 
-  "v10": {
+  "v9": {
     stem: "A key international register for pre-registering systematic review protocols in health and social care is ___________.",
     acceptable: ["prospero", "PROSPERO"],
     feedback: "PROSPERO — the International Prospective Register of Systematic Reviews — is maintained by the National Institute for Health Research. Registration creates a public record of what was planned, enabling detection of outcome switching."
+  },
+  
+   "v10": {
+    label: "DISCRIMINATION FRAME",
+    stem: "A practitioner consults a review of the literature that utilized a pre-published search protocol, applied explicit inclusion/exclusion criteria for all retrieved articles, and conducted a formal risk-of-bias assessment. Is this likely a Systematic Review (SR)? Answer yes or no.",
+    acceptable: ["yes"],
+    feedback: "Correct. Unlike a narrative review, a Systematic Review (SR) is defined by its transparency and reproducibility. By using pre-specified eligibility criteria and a systematic search strategy, the authors minimize selection bias, allowing other researchers to replicate the review and reach similar conclusions."
   },
 
   "v11": {
@@ -107,7 +107,7 @@ window.PI_FRAMES = {
   "v15": {
     stem: "Does AMSTAR-2 produce a quality score?",
     acceptable: ["no"],
-    feedback: "AMSTAR-2 generates a rating of overall quality not a numerical score. The adapted tool the R-AMSTAR produces a score. A critically low AMSTAR-2 rating indicates that the review has critical methodological flaws that substantially undermine confidence in its conclusions. The authors of AMSTAR-2 argue that such reviews should not be used as a primary basis for clinical decisions."
+    feedback: "AMSTAR-2 generates a rating of overall quality not a numerical score. The adapted tool the R-AMSTAR produces a score. A critically low AMSTAR-2 rating indicates that the review has critical methodological flaws (e.g., not conducting risk of bias assessment, absence of preregistration) that substantially undermine confidence in its conclusions. The authors of AMSTAR-2 argue that such reviews should not be used as a primary basis for clinical decisions."
   },
 
   "v16": {
@@ -243,9 +243,9 @@ window.PI_FRAMES = {
 
   "v36": {
     label: "DISCRIMINATION FRAME",
-    stem: "A meta-analysis reports a large pooled effect size, but the funnel plot is markedly asymmetric. Should the practitioner have high confidence in this effect size estimate? Answer yes or no.",
-    acceptable: ["no"],
-    feedback: "No — asymmetric funnel plots is suggestive of potential publication bias, meaning the true effect is likely smaller than the published estimate. The practitioner should seek the bias-corrected effect size estimate and interpret the evidence with appropriate caution."
+    stem: "A meta-analysis reports a large pooled effect size, with a funnel plot that is markedly asymmetric. Should the practitioner be cautious about the effect size estimate? Answer yes or no.",
+    acceptable: ["yes"],
+    feedback: "Yes — an asymmetric funnel plots is suggestive (albeit not conclusive) of potential publication bias, meaning the true effect is likely smaller than the published estimate. The practitioner should seek the bias-corrected effect size estimate and interpret the evidence with appropriate caution."
   },
 
   "v37": {
@@ -297,8 +297,7 @@ window.PI_FRAMES = {
     label: "DISCRIMINATION FRAME",
     stem: "A colleague argues that ABA is immune to the replication crisis because single-case designs use within-subject replication. Is this argument valid? Answer yes or no.",
     acceptable: ["no"],
-    feedback: "No — within-subject replication addresses internal validity (demonstrating experimental control within a study) but does not address external validity or publication bias. ABA studies are subject to the same file drawer problem, outcome switching, and selective reporting as other research designs."
-  },
+    feedback: "No. While within-subject replication is a powerful tool for establishing internal validity, it does not protect a field from 'systemic' replication issues. The replication crisis also involves publication bias (the 'file drawer' effect), a lack of direct inter-laboratory replication, and the limited external validity of findings across diverse populations and settings. No single research design is immune to these broader scientific pressures"  },
 
   // ── SECTION 8: Open Science ────────────────────────────────────────────────
 
@@ -353,9 +352,9 @@ window.PI_FRAMES = {
 
   "v53": {
     label: "DISCRIMINATION FRAME",
-    stem: "A researcher pre-registers their study but then analyses additional outcome variables that were not pre-registered without labelling these as exploratory. Does pre-registration prevent this problem? Answer yes or no.",
-    acceptable: ["no"],
-    feedback: "No — pre-registration creates a record but does not technically prevent outcome switching. The researcher must transparently report which analyses were pre-registered and which were exploratory. Registered reports with editorial oversight provide stronger protection because deviation from the pre-registered protocol requires justification to the editor."
+    stem: "A researcher pre-registers their study but then analyses additional outcome variables that were not pre-registered. Is this acceptable?  Answer yes or no.",
+    acceptable: ["Yes"],
+    feedback: "Yes — as long as the additonal analyses are labelled as such (i.e.,exploratory) Pre-registration is designed to protect against selective reporting and undeclared outcome switching thorugh a verifiable record. The researcher must transparently report which analyses were pre-registered and which were exploratory. Registered reports with editorial oversight provide stronger protection because deviation from the pre-registered protocol requires justification to the editor."
   },
 
   // ── SECTION 9: Being a Sceptical Consumer ────────────────────────────────
@@ -363,8 +362,8 @@ window.PI_FRAMES = {
   "v54": {
     section: "Section 9: Being a Sceptical Consumer of the Literature",
     stem: "Being a sceptical consumer of the literature means not accepting reported findings at face value but evaluating the ___________ quality, potential biases, and generalisability of each study.",
-    acceptable: ["methodological", "evidence"],
-    feedback: "Sceptical consumption is not cynicism — it is the application of critical appraisal skills. Even published, peer-reviewed research may have methodological weaknesses, publication bias, or limited generalisability that affect its clinical applicability."
+    acceptable: ["methodological", "evidence", "scientific", "experimental"],
+    feedback: "methodological or scientific quality! Sceptical consumption is not cynicis, it is the application of critical appraisal skills. Even published, peer-reviewed research may have methodological weaknesses, be subject to publication bias, or limited generalisability that affect its clinical applicability."
   },
 
   "v55": {
