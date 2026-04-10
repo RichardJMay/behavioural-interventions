@@ -58,7 +58,7 @@ window.PI_FRAMES = {
 
   "f9": {
     label: "DISCRIMINATION FRAME",
-    stem: "A practitioner delivers attention every time a student raises their hand, regardless of whether the student also calls out. Is this differential reinforcement? Answer yes or no.",
+    stem: "A student simultaneously raises their hand and shouts 'I know!' The teacher provides praise. If the goal is to decrease shouting, is this an application of Differential Reinforcement? Answer yes or no.",
     acceptable: ["no"],
     feedback: "No — differential reinforcement requires <em>both</em> reinforcing one behaviour <em>and</em> withholding reinforcement for another. If the problem behaviour (calling out) is still being reinforced, only one component is present."
   },
@@ -131,9 +131,9 @@ window.PI_FRAMES = {
 
   "f19": {
     label: "DISCRIMINATION FRAME",
-    stem: "A practitioner reinforces a student for working on worksheets to reduce out-of-seat behaviour. Working on worksheets and being out of seat <em>can</em> occur at the same time. Is this DRI or DRA?",
-    acceptable: ["dra"],
-    feedback: "DRA — the behaviours are not physically incompatible. The effectiveness of DRA does not depend on incompatibility. An alternative that occupies the learner can be sufficient."
+    stem: "A practitioner reinforces completing worksheets to reduce out-of-seat behaviour. Could this be an example of DRA?",
+    acceptable: ["yes"],
+    feedback: "yes — the behaviours are not physically incompatible. The effectiveness of DRA does not depend on incompatibility"
   },
 
   "f20": {
@@ -164,9 +164,9 @@ window.PI_FRAMES = {
 
   "f24": {
     label: "DISCRIMINATION FRAME",
-    stem: "A practitioner reinforces a student for saying 'I need a break' by providing brief escape from demands, and applies extinction to flopping on the floor. The problem behaviour is maintained by escape. Which procedure is this — DRA or DNRA?",
-    acceptable: ["dnra", "dra"],
-    feedback: "DNRA — the reinforcer for the alternative behaviour is negative reinforcement (escape from demands). If you answered DRA, that is partially correct — DNRA is a subtype of DRA, but the more specific label is DNRA."
+    stem: "During a physical therapy session, a client becomes fatigued by a motor task. The clinician teaches the client to raise her hand to pause the activity, rather than simply stopping and walking away. Is this DRA or DNRA?",
+    acceptable: ["dnra"],
+    feedback: "DNRA — the reinforcer for the alternative behaviour is negative reinforcement (escape from ongoing activity). If you answered DRA, that is partially correct — DNRA is a subtype of DRA, but the more specific label is DNRA."
   },
 
   // ── SECTION 3: Selecting behaviours and reinforcers ───────────────────────
@@ -243,16 +243,16 @@ window.PI_FRAMES = {
   },
 
   "f33": {
-    stem: "When DRA begins, the alternative behaviour should initially be placed on a ___________ schedule (CRF) before transitioning to an intermittent schedule.",
+    stem: "When DRA begins, the alternative behaviour should initially be placed on a ___________ schedule before transitioning to an intermittent schedule.",
     acceptable: ["continuous", "continuous reinforcement", "crf"],
     feedback: "CRF firmly establishes the alternative behaviour. Once it is strong, the schedule can be gradually thinned to an intermittent schedule that is more sustainable in natural environments."
   },
 
   "f34": {
     label: "DISCRIMINATION FRAME",
-    stem: "A practitioner begins a DRA programme by reinforcing the alternative behaviour on a VR5 schedule from the start, rather than CRF. Is this consistent with DRA implementation guidelines? Answer yes or no.",
-    acceptable: ["no"],
-    feedback: "No — DRA should begin with CRF to firmly establish the alternative behaviour before any schedule thinning. Starting with an intermittent schedule risks the alternative behaviour not gaining sufficient strength to compete with the problem behaviour."
+    stem: "Reinforcer value (e.g., magnitude) matters during DRA. Answer yes or no.",
+    acceptable: ["yes"],
+    feedback: "Yes - behavior is distributed based on the relative rate and quality of reinforcement. If a new skill (like using a communication device) is harder to perform than an old behavior (like grabbing), the reinforcer for the new skill must be 'better' (higher magnitude or quality) to successfully compete."
   },
 
   "f35": {
@@ -311,7 +311,7 @@ window.PI_FRAMES = {
     label: "DISCRIMINATION FRAME",
     stem: "A client's DRA programme is going well in the clinic. The programme is extended to the classroom with a new teacher. The practitioner should watch for ___________ of the problem behaviour.",
     acceptable: ["resurgence", "relapse", "recurrence"],
-    feedback: "The shift to a new setting with a new implementer is a classic trigger for treatment relapse or resurgance. The new teacher should receive training in the DRA protocol before the extension begins."
+    feedback: "The shift to a new setting with a new implementer is a classic trigger for treatment relapse or resurgence. The new teacher should receive training in the DRA protocol before the extension begins."
   },
 
   "f44": {
@@ -376,9 +376,9 @@ window.PI_FRAMES = {
 
   "f53": {
     label: "DISCRIMINATION FRAME",
-    stem: "Under <em>momentary</em> DRO, is there any need to reset the interval at any other time than the end of the interval? Answer yes or no.",
-    acceptable: ["no"],
-    feedback: "No — momentary DRO only checks at the end-point. The learner can be engaging in the problem behaviour during the rest of the interval without resulting in interval reset. This illustrates why interval DRO generally produces stronger suppression."
+    stem: "Under <em>momentary</em> DRO, there is NO need to reset the interval at any other time than the end of the interval? Answer 'true' or 'false'",
+    acceptable: ["true"],
+    feedback: "true — momentary DRO only checks at the end-point. The learner can be engaging in the problem behaviour during the rest of the interval without resulting in interval reset. This illustrates why interval DRO generally produces stronger suppression."
   },
 
   "f54": {
@@ -543,9 +543,9 @@ window.PI_FRAMES = {
 
   "f73": {
     label: "DISCRIMINATION FRAME",
-    stem: "A learner engages in self-injurious behaviour at high rates. Is DRL the appropriate procedure? Answer yes or no.",
+    stem: "A client frequently runs into heavy traffic (elopement). The practitioner considers a spaced-responding DRL schedule to gradually reduce the frequency of running. Is this an appropriate application of DRL? Answer yes or no.",
     acceptable: ["no"],
-    feedback: "No, in general DRL should never be used with self-injurious behaviours, and it should not be used when rapid suppression is needed. DRL produces gradual reduction and actually reinforces the occurrence of the behaviour (when it meets the criterion). DRA or DRO combined with other reductive procedures would be more appropriate."
+    feedback: "No, in general DRL should never be used with dangerous behaviours, and it should not be used when rapid suppression is needed. Spaced-responding DRL is designed to stabilize a behaviour at a lower rate, not eliminate it. For life-threatening risks like elopement, the goal must be total suppression via DRO or DRA."
   },
 
   "f74": {
