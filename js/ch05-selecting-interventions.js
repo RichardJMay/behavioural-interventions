@@ -55,7 +55,7 @@ window.PI_FRAMES = {
 
   "g8": {
     stem: "Goals should be ___________ within the learner's current context and maintainable over time without requiring unsustainable levels of support.",
-    acceptable: ["acheiveable"],
+    acceptable: ["achievable"],
     feedback: "Attainability and sustainability are practical constraints. A goal that requires constant one-to-one support to maintain will not be sustained in the natural environment. Goals must be achievable under conditions that can realistically be maintained."
   },
 
